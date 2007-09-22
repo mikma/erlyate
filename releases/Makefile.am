@@ -9,3 +9,7 @@ $(top_builddir)/src/sipb2bua -pa $(top_builddir)/src/sipclient
 run:
 	$(ERL) $(AM_ERL_FLAGS) $(ERL_FLAGS) $(AM_ERLCFLAGS) $(ERLCFLAGS)
 # -s systools make_tar sipb2bua -s init exit
+
+run-yatedemo:
+	$(ERL) $(AM_ERL_FLAGS) $(ERL_FLAGS) $(AM_ERLCFLAGS) $(ERLCFLAGS) -boot yate_demo
+

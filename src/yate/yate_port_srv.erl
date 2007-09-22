@@ -159,7 +159,7 @@ kill(undefined) ->
 %%
 
 get_wrapper() ->
-    UninstWrapper = "../yate/wrapper",
+    UninstWrapper = "../src/yate/wrapper",
     case filelib:is_file(UninstWrapper) of
 	true ->
 	    UninstWrapper;
