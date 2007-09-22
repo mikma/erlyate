@@ -10,4 +10,4 @@ ebin_DATA = $(beam_FILES) $(OPT_APP:=.app)
 EXTRA_DIST = $($(OPT_APP)_SRCS) $(OPT_APP:=.app-in)
 CLEANFILES = $(beam_FILES) $(OPT_APP:=.app)
 
-include $(top_srcdir)/rules.mk
+include $(top_srcdir)/rules/rules.mk

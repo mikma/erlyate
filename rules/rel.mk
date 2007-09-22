@@ -9,4 +9,4 @@ EXTRA_DIST = $(OPT_RELEASES:=.rel.in)
 CLEANFILES = $(OPT_RELEASES:=.boot) $(OPT_RELEASES:=.rel)	\
 $(OPT_RELEASES:=.script)
 
-include $(top_srcdir)/rules.mk
+include $(top_srcdir)/rules/rules.mk
