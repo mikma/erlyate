@@ -1,8 +1,8 @@
-include $(top_srcdir)/rel.mk
+include $(top_srcdir)/rules/rel.mk
 
-OPT_RELEASES = yate yate_demo sipua sipb2bua sipclient
+OPT_RELEASES = yate yate_demo sipclient
 
-AM_ERLCFLAGS = -pa $(top_builddir)/src/yate -pa			\
+AM_ERL_FLAGS = -pa $(top_builddir)/src/yate -pa			\
 $(top_builddir)/src/yate_demo -pa $(top_builddir)/src/sipua -pa	\
 $(top_builddir)/src/sipb2bua -pa $(top_builddir)/src/sipclient
 
