@@ -59,9 +59,12 @@ AC_CONFIG_FILES([
 		 Makefile
 		 include/Makefile
 		 src/Makefile
-		 src/yate/Makefile
-		 src/yate_demo/Makefile
-		 src/sipclient/Makefile
+		 yate/Makefile
+		 yate/src/Makefile
+		 yate_demo/Makefile
+		 yate_demo/src/Makefile
+		 sipclient/Makefile
+		 sipclient/src/Makefile
 		 releases/Makefile
 		])
 
