@@ -159,16 +159,10 @@ kill(undefined) ->
 %%
 
 get_wrapper() ->
-    UninstWrapper = "../src/yate/wrapper",
-    case filelib:is_file(UninstWrapper) of
-	true ->
-	    UninstWrapper;
-	false ->
-	    case code:lib_dir(yate) of
-		{error, Reason} ->
-		    exit(Reason);
-		LibDir ->
-		    BinDir = filename:absname_join(LibDir, "bin"),
-		    filename:absname_join(BinDir, "wrapper")
-	    end
+    case code:priv_dir(yate) of
+	{error, Reason} ->
+	    exit(Reason);
+	LibDir ->
+	    BinDir = LibDir,
+	    filename:absname_join(BinDir, "wrapper")
     end.

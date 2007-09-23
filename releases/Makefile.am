@@ -2,14 +2,15 @@ include $(top_srcdir)/rules/rel.mk
 
 OPT_RELEASES = yate yate_demo sipclient
 
-AM_ERL_FLAGS = -pa $(top_builddir)/src/yate -pa			\
-$(top_builddir)/src/yate_demo -pa $(top_builddir)/src/sipua -pa	\
-$(top_builddir)/src/sipb2bua -pa $(top_builddir)/src/sipclient
+AM_ERL_FLAGS = -pa $(top_builddir)/yate/ebin -pa			\
+$(top_builddir)/yate_demo/ebin -pa $(top_builddir)/sipclient/ebin
 
 run:
-	$(ERL) $(AM_ERL_FLAGS) $(ERL_FLAGS) $(AM_ERLCFLAGS) $(ERLCFLAGS)
+	$(ERL) $(AM_ERL_FLAGS) $(ERL_FLAGS) -name yate
 # -s systools make_tar sipb2bua -s init exit
 
 run-yatedemo:
-	$(ERL) $(AM_ERL_FLAGS) $(ERL_FLAGS) $(AM_ERLCFLAGS) $(ERLCFLAGS) -boot yate_demo
+	$(ERL) $(AM_ERL_FLAGS) $(ERL_FLAGS) -boot yate_demo -name yate
 
+run-sipclient:
+	$(ERL) $(AM_ERL_FLAGS) $(ERL_FLAGS) -boot sipclient -name yate
