@@ -3,6 +3,8 @@
  [{kernel,"@ERLANG_LIB_VER_kernel@"},
   {stdlib,"@ERLANG_LIB_VER_stdlib@"},
   {sasl,"@ERLANG_LIB_VER_sasl@"},
+  {inets,"@ERLANG_LIB_VER_inets@"},
   {yate, "0.0"},
   {sipua, "0.0"},
+  {yxa, "0.91"},
   {sipclient, "0.0"}]}.

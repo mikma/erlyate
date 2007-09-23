@@ -6,15 +6,16 @@
              ysip_srv
             ]},
   {registered, [
-                sipserver_sup,
-                yxa_config,
-                logger,
-                ldap_client,
-                tcp_dispatcher,
-                sipsocket_udp,
-                transactionlayer
+%                sipserver_sup,
+%                yxa_config,
+%                logger,
+%                ldap_client,
+%                tcp_dispatcher,
+%                sipsocket_udp,
+%                transactionlayer
                ]},
   {mod, {sipserver, [sipclient]}},
   {env, []},
+  {included_applications, [yxa]},
   {applications,
         [kernel, stdlib, yate, sipua]}]}.
