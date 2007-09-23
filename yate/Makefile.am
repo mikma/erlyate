@@ -1,4 +1,4 @@
-SUBDIRS = src c_src
+SUBDIRS = include src c_src
 
 all-local:
 	test -L ebin || ln -s src ebin
