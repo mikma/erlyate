@@ -25,9 +25,9 @@ yate_test.erl \
 yate_util.erl \
 yate_srv.hrl
 
-yate_HDRS = yate.hrl
+#yate_HDRS = yate.hrl
 
-AM_ERLCFLAGS = -I$(top_srcdir)/include
+AM_ERLCFLAGS = -I$(srcdir)/../include
 
 EXTRA_DIST += yate_generated.hrl.in
 CLEANFILES += yate_generated.hrl
