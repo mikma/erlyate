@@ -1,6 +1,6 @@
 include $(top_srcdir)/rules/app.mk
 
-OPT_APP = yate_demo
+OTP_APP = yate_demo
 
 yate_demo_VSN = 1.0
 

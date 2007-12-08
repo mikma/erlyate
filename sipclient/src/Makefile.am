@@ -1,6 +1,6 @@
 include $(top_srcdir)/rules/app.mk
 
-OPT_APP = sipclient
+OTP_APP = sipclient
 
 sipclient_VSN = 1.0
 

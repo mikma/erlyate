@@ -1,6 +1,6 @@
 include $(top_srcdir)/rules/rel.mk
 
-OPT_RELEASES = yate yate_demo sipclient
+OTP_RELEASES = yate yate_demo sipclient
 
 AM_ERL_FLAGS = -pa $(top_builddir)/yate/ebin -pa			\
 $(top_builddir)/yate_demo/ebin -pa $(top_builddir)/sipclient/ebin
