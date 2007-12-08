@@ -9,6 +9,7 @@
 
 #include<stdio.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <signal.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -62,7 +63,25 @@ int loop(int child, int fdin, int fdout)
 	    len = read(fdin, buf, sizeof(buf));
 
 	    if (len == 0) {
+		pid_t res;
+		int status = 0;
 		DEBUG("pipe closed\n");
+		res = waitpid(child, &status, WNOHANG);
+
+		if (res < 0) {
+		    perror("waitpid");
+		    return 0;
+		} else if (res == 0) {
+		    return 0;
+		}
+
+		if (WIFEXITED(status)) {
+		    return WEXITSTATUS(status);
+		} else if (WIFSIGNALED(status)) {
+		    DEBUG("child terminated by signal\n");
+		    return 1;
+		}
+
 		return 0;
 	    } else if (len > 0) {
 		write(1, buf, len);
