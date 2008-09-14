@@ -6,5 +6,5 @@
   {inets,"@ERLANG_LIB_VER_inets@"},
   {yate, "0.0"},
   {sipua, "0.0"},
-  {yxa, "0.91"},
+  {yxa, "@ERLANG_LIB_VER_yxa@"},
   {sipclient, "0.0"}]}.
