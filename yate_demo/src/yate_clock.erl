@@ -174,5 +174,5 @@ wave_ones(Ones) ->
     end.
 
 asterisk_sound_path() ->
-    "/var/local/tmp/cvs/asterisk.d/archive/asterisk.net/sounds/digits/".
+    "/usr/share/asterisk/sounds/digits/".
 
