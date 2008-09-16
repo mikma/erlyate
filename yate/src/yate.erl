@@ -1,7 +1,7 @@
 %%%
 %%% @doc       Interface module
 %%% @author    Mikael Magnusson <mikma@users.sourceforge.net>
-%%% @copyright 2006 Mikael Magnusson
+%%% @copyright 2006-2008 Mikael Magnusson
 %%%
 -module(yate).
 
@@ -13,9 +13,15 @@
 
 -include("yate.hrl").
 
+%%--------------------------------------------------------------------
+%% @spec start() -> Result
+%% @doc Start yate app and its dependent application(s).
+%% @end
+%%--------------------------------------------------------------------
 start() ->
     application:start(sasl),
-    application:start(yate).
+    application:start(yate),
+    ok.
 
 %%--------------------------------------------------------------------
 %% @spec connect(Host, Port) -> Result
@@ -29,7 +35,7 @@ connect(Host, Port) ->
     yate_port_sup:start_client(Host, Port).
 
 %%--------------------------------------------------------------------
-%% @spec link(Conn) -> Result
+%% @spec open(Client) -> Result
 %%           Result = {ok, Handle} | {error, Reason}
 %% @doc Link to Yate extmodule
 %% @end
@@ -51,10 +57,11 @@ close(Handle) ->
 %% @spec watch(Handle, Name, Fun) -> true
 %%           Handle = pid()
 %%           Name = atom()
-%%           Fun = fun(Cmd) -> true | false
+%%           Fun = fun()
 %%           Cmd = #command{}
 %% @doc install message watcher (post-dispatching notifier)
 %% @end
+%% TODO: Fun = fun(Cmd) -> true | false
 %%--------------------------------------------------------------------
 watch(Handle, Name, Fun) ->
     call(Handle, {watch, Name, Fun}).
@@ -73,10 +80,11 @@ unwatch(Handle, Name) ->
 %% @spec install(Handle, Name, Fun) -> ok
 %%           Handle = pid()
 %%           Name = atom()
-%%           Fun = fun(Cmd) -> true | false
+%%           Fun = fun()
 %%           Cmd = #command{}
 %% @doc install message handler
 %% @end
+%% TODO: Fun = fun(Cmd) -> true | false
 %%--------------------------------------------------------------------
 install(Handle, Name, Fun) ->
     call(Handle, {install, Name, Fun}).
@@ -117,7 +125,7 @@ ret(Pid, Cmd, Success, Retval) when is_pid(Pid), is_record(Cmd, command) ->
     ok.
 
 %%--------------------------------------------------------------------
-%% @spec queue_msg(Handle, Name, Keys) -> ok
+%% @spec queue_msg(Handle, Name, Keys, Tag) -> ok
 %%           Handle = pid()
 %%           Name = string()
 %%           Keys = dictionary()
@@ -129,7 +137,7 @@ queue_msg(Handle, Name, Keys, Tag) ->
 
 
 %%--------------------------------------------------------------------
-%% @spec msg(Handle, Name, Keys) -> {ok, Cmd}
+%% @spec send_msg(Handle, Name, Keys) -> {ok, Cmd}
 %%           Handle = pid()
 %%           Name = string()
 %%           Keys = dictionary()

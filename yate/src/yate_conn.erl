@@ -11,17 +11,6 @@
 -include("yate.hrl").
 
 %%--------------------------------------------------------------------
-%% @spec connect(Host, Port) -> Result
-%%           Host = string() | atom() | ip_address()
-%%           Port = integer()
-%%           Result = {ok, Handle} | {error, Reason}
-%% @doc Connect to Yate extmodule
-%% @end
-%%--------------------------------------------------------------------
-%% connect(Host, Port, Pid) ->
-%%     yate_sup:start_child(Host, Port, Pid).
-
-%%--------------------------------------------------------------------
 %% @spec watch(Handle, Name) -> true
 %%           Handle = pid()
 %%           Name = atom()
@@ -74,7 +63,7 @@ uninstall(Handle, Name) ->
     call(Handle, {uninstall, Name}).
 
 %%--------------------------------------------------------------------
-%% @spec ret(Handle, Cmd, Processed) -> ok
+%% @spec ret(Handle, Cmd, Success) -> ok
 %%           Handle = pid()
 %%           Cmd = #command{}
 %% @doc answer message
@@ -96,7 +85,7 @@ ret(Handle, Cmd, Success, Retval) ->
     gen_server:cast(Handle, {ret, Cmd#command{success=Success,header=Header}}).
 
 %%--------------------------------------------------------------------
-%% @spec queue_msg(Handle, Name, Keys) -> ok
+%% @spec queue_msg(Handle, Name, Keys, Tag) -> ok
 %%           Handle = pid()
 %%           Name = string()
 %%           Keys = dictionary()
@@ -108,7 +97,7 @@ queue_msg(Handle, Name, Keys, Tag) ->
 
 
 %%--------------------------------------------------------------------
-%% @spec msg(Handle, Name, Keys) -> {ok, Cmd}
+%% @spec send_msg(Handle, Name, Keys) -> {ok, Cmd}
 %%           Handle = pid()
 %%           Name = string()
 %%           Keys = dictionary()

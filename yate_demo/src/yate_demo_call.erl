@@ -25,7 +25,7 @@ start_link(Client, Cmd, From, Args) ->
     start_link(Client, Id, Cmd, From, Args).
 
 %%--------------------------------------------------------------------
-%% @spec start_link() -> Result
+%% @spec start_link(Client, Id, Cmd, From, Args) -> Result
 %%           Result = {ok, Pid} | {error, Reason}
 %% @doc Start demo server
 %% @end

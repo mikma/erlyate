@@ -35,7 +35,9 @@
 
 
 %%--------------------------------------------------------------------
-%% @spec start_link() -> Result
+%% @spec start_link(Host, Port) -> Result
+%%           Host = string()
+%%           Port = integer()
 %%           Result = {ok, Pid} | {error, Reason}
 %% @doc Start server and connect to Yate as external module
 %% @end
@@ -56,7 +58,8 @@ connect(Handle, Host, Port) ->
 
 
 %%--------------------------------------------------------------------
-%% @spec stop() -> ok
+%% @spec stop(Pid) -> ok
+%%             Pid = pid()
 %% @doc Stop server
 %% @end
 %%--------------------------------------------------------------------

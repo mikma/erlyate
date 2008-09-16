@@ -35,7 +35,7 @@ start(Client, Id, Cmd, From, Args) ->
     gen_server:start(yate_clock, [Client, Id, Cmd, From, Args], []).
 
 %%--------------------------------------------------------------------
-%% @spec start_link() -> Result
+%% @spec start_link(Client, Id, Cmd, From, Args) -> Result
 %%           Result = {ok, Pid} | {error, Reason}
 %% @doc Start demo server
 %% @end

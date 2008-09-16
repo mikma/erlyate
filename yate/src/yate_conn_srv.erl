@@ -1,7 +1,7 @@
 %%%
 %%% @doc       TCP connection server
 %%% @author    Mikael Magnusson <mikma@users.sourceforge.net>
-%%% @copyright 2006 Mikael Magnusson
+%%% @copyright 2006-2008 Mikael Magnusson
 %%%
 -module(yate_conn_srv).
 
@@ -28,7 +28,9 @@
 
 
 %%--------------------------------------------------------------------
-%% @spec start_link() -> Result
+%% @spec start_link(Host, Port, Pid) -> Result
+%%           Host = string()
+%%           Port = integer()
 %%           Result = {ok, Pid} | {error, Reason}
 %% @doc Start server and connect to Yate as external module
 %% @end
@@ -38,7 +40,8 @@ start_link(Host, Port, Pid) ->
 
 
 %%--------------------------------------------------------------------
-%% @spec stop() -> ok
+%% @spec stop(Pid) -> ok
+%%           Pid = pid()
 %% @doc Stop server
 %% @end
 %%--------------------------------------------------------------------
