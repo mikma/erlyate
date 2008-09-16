@@ -9,9 +9,13 @@
 %%-export([connect/2, stop/1, install/2, install/3, uninstall/2, watch/2, unwatch/2, ret/3, ret/4, queue_msg/3, send_msg/3]).
 -export([connect/2, open/1, dup/1, close/1, install/3, uninstall/2, watch/3, unwatch/2, ret/3, ret/4, queue_msg/4, send_msg/3]).
 
--export([make/0]).
+-export([start/0, make/0]).
 
 -include("yate.hrl").
+
+start() ->
+    application:start(sasl),
+    application:start(yate).
 
 %%--------------------------------------------------------------------
 %% @spec connect(Host, Port) -> Result

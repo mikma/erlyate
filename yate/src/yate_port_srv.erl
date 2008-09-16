@@ -7,8 +7,6 @@
 %%%
 -module(yate_port_srv).
 
--include("yate_generated.hrl").
-
 -behaviour(gen_server).
 
 %% api
@@ -56,12 +54,20 @@ stop() ->
 %% gen_server callbacks
 %%
 init([]) ->
-    Dirname = filename:dirname(?YATE),
-    Basename = filename:basename(?YATE),
+    Yate = os:getenv("YATE"),
+    if
+	Yate == false ->
+	    throw(no_yate_env);
+	true ->
+	    ok
+    end,
+
+    Dirname = filename:dirname(Yate),
+    Basename = filename:basename(Yate),
     error_logger:info_msg("~p: Before wrapper~n", [?MODULE]),
     Wrapper = get_wrapper(),
-    Args = "-vvvvvvvvv",
-    Prog = Wrapper ++ " " ++ Dirname ++ " " ++ Basename ++ " " ++ Args,
+    Args = "-vvv",
+    Prog = Wrapper ++ " " ++ Dirname ++ " " ++ Yate ++ " " ++ Args,
     error_logger:info_msg("~p: Prog ~p~n", [?MODULE, Prog]),
     Port = erlang:open_port({spawn, Prog},
 			    [exit_status, stream,
@@ -123,12 +129,13 @@ handle_port(Info, State) ->
 
 
 handle_data({eol, String}, State) when State#sstate.state == startup ->
+    error_logger:info_msg("Looking for pid ~p~n", [String]),
     {match, Start, Len} = regexp:first_match(String, "\\([0-9]+\\)"),
     PidStr = string:substr(String, Start + 1, Len - 2),
     Pid = list_to_integer(PidStr),
     error_logger:info_msg("Yate pid ~p~n", [Pid]),
     {ok, State#sstate{pid=Pid,state=starting}};
-handle_data({eol, "Yate engine is initialized and starting up"}, State) ->
+handle_data({eol, "Yate engine is initialized and starting up" ++ Extra}, State) ->
     error_logger:info_msg("Yate ready!~n"),
     Fun = fun(From) -> gen_server:reply(From, ok) end,
     lists:map(Fun, State#sstate.waiting),
