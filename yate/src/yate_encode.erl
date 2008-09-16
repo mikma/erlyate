@@ -51,7 +51,7 @@ encode_data({Type, Dir, Headers, Keys}) ->
     {ok, TypeStr} = encode_type(Type),
     {ok, DirStr} = encode_dir(Dir),
     HeaderStr = encode_params(header, Headers),
-    KeyStr = command:encode_keys(Keys),
+    KeyStr = yate_command:encode_keys(Keys),
     Msg = "%%" ++ DirStr ++ TypeStr ++ HeaderStr ++ KeyStr ++ "\n",
     {ok, Msg}.
 

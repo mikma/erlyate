@@ -26,38 +26,38 @@ decode_command(install, ans, [PrioStr, NameStr, SuccessStr | KeyStrs]) ->
     Prio = decode_prio(PrioStr),
     Name = decode_name(NameStr),
     Success = decode_success(SuccessStr),
-    Keys = command:decode_keys(KeyStrs),
+    Keys = yate_command:decode_keys(KeyStrs),
     Header = #install{priority=Prio},
     {ok, #command{type=install,id=Name,success=Success,header=Header,keys=Keys}};
 decode_command(uninstall, ans, [PrioStr, NameStr, SuccessStr | KeyStrs]) ->
     Prio = decode_prio(PrioStr),
     Name = decode_name(NameStr),
     Success = decode_success(SuccessStr),
-    Keys = command:decode_keys(KeyStrs),
+    Keys = yate_command:decode_keys(KeyStrs),
     Header = #uninstall{priority=Prio},
     {ok, #command{type=uninstall,id=Name,success=Success,header=Header,keys=Keys}};
 decode_command(watch, ans, [NameStr, SuccessStr | KeyStrs]) ->
     Name = decode_name(NameStr),
     Success = decode_success(SuccessStr),
-    Keys = command:decode_keys(KeyStrs),
+    Keys = yate_command:decode_keys(KeyStrs),
     {ok, #command{type=watch,id=Name,success=Success,keys=Keys}};
 decode_command(unwatch, ans, [NameStr, SuccessStr | KeyStrs]) ->
     Name = decode_name(NameStr),
     Success = decode_success(SuccessStr),
-    Keys = command:decode_keys(KeyStrs),
+    Keys = yate_command:decode_keys(KeyStrs),
     {ok, #command{type=unwatch,id=Name,success=Success,keys=Keys}};
 decode_command(message, req, [IdStr, TimeStr, NameStr, RetStr | KeyStrs]) ->
     Id = decode_id(IdStr),
     Time = decode_time(TimeStr),
     Name = decode_name(NameStr),
-    Keys = command:decode_keys(KeyStrs),
+    Keys = yate_command:decode_keys(KeyStrs),
     Header = #message{time=Time,name=Name,retvalue=RetStr},
     {ok, #command{type=message,id=Id,header=Header,keys=Keys}};
 decode_command(message, ans, [IdStr, ProcessedStr, NameStr, RetStr | KeyStrs]) ->
     Id = decode_id(IdStr),
     Success = decode_processed(ProcessedStr),
     Name = decode_name(NameStr),
-    Keys = command:decode_keys(KeyStrs),
+    Keys = yate_command:decode_keys(KeyStrs),
     Header = #message{name=Name,retvalue=RetStr},
     {ok, #command{type=message,id=Id,header=Header,success=Success,keys=Keys}}.
 

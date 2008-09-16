@@ -94,7 +94,7 @@ handle_cast(stop, State) ->
 handle_info({yate, Dir, Cmd, From}, State) ->
     handle_command(Cmd#command.type, Dir, Cmd, From, State);
 handle_info({cast, {ans, RetValue, RetCmd}, {call, From}}, State) ->
-    Id = command:fetch_key(id, RetCmd),
+    Id = yate_command:fetch_key(id, RetCmd),
     error_logger:info_msg("Result ~p ~p~n", [RetValue, Id]),
     gen_server:reply(From, RetValue),
     {noreply, State};
@@ -134,10 +134,10 @@ handle_command(message, ans, _Cmd, _From, State) ->
 
 
 handle_message(call.execute, Cmd, From, State) ->
-    Callto = command:fetch_key(callto, Cmd),
+    Callto = yate_command:fetch_key(callto, Cmd),
     handle_call_execute(Callto, Cmd, From, State);
 handle_message(call.route, Cmd, From, State) ->
-    handle_call_route(command:fetch_key(called, Cmd), Cmd, From, State).
+    handle_call_route(yate_command:fetch_key(called, Cmd), Cmd, From, State).
 
 
 handle_call_execute("erl/" ++ String, Cmd, From, State) ->

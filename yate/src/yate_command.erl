@@ -1,4 +1,4 @@
--module(command).
+-module(yate_command).
 
 -include("yate.hrl").
 

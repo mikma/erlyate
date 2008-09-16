@@ -21,7 +21,7 @@
 -define(TIMEOUT_WAIT_EXEC, 10000). %% 10s
 
 start_link(Client, Cmd, From, Args) ->
-    Id = command:fetch_key(id, Cmd),
+    Id = yate_command:fetch_key(id, Cmd),
     start_link(Client, Id, Cmd, From, Args).
 
 %%--------------------------------------------------------------------
@@ -40,7 +40,7 @@ init([Client, Id, ExecCmd, From, _Args]) ->
     {ok, Call} = yate_call_reg:get_call(Client, Id, ExecCmd),
     {ok, Handle} = yate:open(Client),
 
-    NewCmd = command:append_keys([
+    NewCmd = yate_command:append_keys([
 				   {callto, "dumb/"},
 				   {autoring, true}
 				  ],

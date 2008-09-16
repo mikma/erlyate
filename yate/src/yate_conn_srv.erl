@@ -166,7 +166,7 @@ queue_message(Name, Keys, Tag, State) ->
     Header = #message{time=Time,name=Name,retvalue=""},
     Id = erlang:ref_to_list(make_ref()),
     Cmd = #command{id=Id,type=message,header=Header},
-    Cmd1 = command:append_keys(Keys, Cmd),
+    Cmd1 = yate_command:append_keys(Keys, Cmd),
     {ok, NewState} = queue_command(req, Cmd1, Tag, State),
     {ok, NewState}.
 

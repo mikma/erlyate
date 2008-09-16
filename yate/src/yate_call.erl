@@ -111,14 +111,14 @@ init_common(Status, Client, Args, Parent) ->
 
 
 setup(incoming, [Cmd], State) ->
-    Id = command:fetch_key(id, Cmd),
+    Id = yate_command:fetch_key(id, Cmd),
     Handle = State#state.handle,
     error_logger:info_msg("~p: ~p watch call.execute id ~p~n", [?MODULE, self(), Id]),
     ok = yate:watch(Handle, call.execute,
 		    fun(Cmd1) ->
-			    case command:find_key(module, Cmd1) of
+			    case yate_command:find_key(module, Cmd1) of
 				{ok, _Driver} ->
-				    Id == command:fetch_key(id, Cmd1);
+				    Id == yate_command:fetch_key(id, Cmd1);
 				_ ->
 				    false
 			    end
@@ -133,7 +133,7 @@ fetch_auto_keys(Cmd) ->
     Autokeys = [answered, ringing, progress],
     case fetch_auto_keys(Cmd, Autokeys, []) of
 	{ok, noauto} ->
-	    case command:find_key(targetid, Cmd) of
+	    case yate_command:find_key(targetid, Cmd) of
 		error ->
 		    {ok, answered};
 		_ ->
@@ -146,7 +146,7 @@ fetch_auto_keys(Cmd) ->
 fetch_auto_keys(_Cmd, [], _Res) ->
     {ok, noauto};
 fetch_auto_keys(Cmd, [Key|R], Res) ->
-    case command:find_key(Key, Cmd) of
+    case yate_command:find_key(Key, Cmd) of
 	{ok, "true"} ->
 	    {ok, Key};
 	_ ->
@@ -172,8 +172,8 @@ handle_call({execute, Keys}, _From, State) ->
 	    {reply, {error, {noroute, RetCmd}}, State};
 	true ->
 	    {ok, Auto} = fetch_auto_keys(RetCmd),
-	    Id = command:fetch_key(id, RetCmd),
-	    Peerid = command:fetch_key(peerid, RetCmd),
+	    Id = yate_command:fetch_key(id, RetCmd),
+	    Peerid = yate_command:fetch_key(peerid, RetCmd),
 	    State1 = State#state{id=Id,peerid=Peerid,status=outgoing},
 	    ok = setup_watches(State1),
 	    Parent ! {yate_call, Auto, RetCmd, self()},
@@ -279,7 +279,7 @@ handle_call({start_rtp, Remote_address, Remote_port}, _From, State) ->
 	case RetValue of
 	    true ->
 		Localip =
-		    case command:find_key(localip, RetCmd) of
+		    case yate_command:find_key(localip, RetCmd) of
 			{ok, Localip1} ->
 			    Localip1;
 			error ->
@@ -287,14 +287,14 @@ handle_call({start_rtp, Remote_address, Remote_port}, _From, State) ->
 		    end,
 
 		Localport =
-		    case command:find_key(localport, RetCmd) of
+		    case yate_command:find_key(localport, RetCmd) of
 			{ok, Localport1} ->
 			    list_to_integer(Localport1);
 			error ->
 			    undefined
 		    end,
 		Rtpid =
-		    case command:find_key(rtpid, RetCmd) of
+		    case yate_command:find_key(rtpid, RetCmd) of
 			{ok, Rtpid1} ->
 			    Rtpid1;
 			error ->
@@ -326,13 +326,13 @@ handle_call({start_rtp, Remote_address}, _From, State) ->
 		      ]),
 
     Localip =
-	case command:find_key(localip, RetCmd) of
+	case yate_command:find_key(localip, RetCmd) of
 	    {ok, Localip1} ->
 		Localip1;
 	    error ->
 		State#state.localip
 	end,
-    Localport = list_to_integer(command:fetch_key(localport, RetCmd)),
+    Localport = list_to_integer(yate_command:fetch_key(localport, RetCmd)),
 
     {reply, {ok, Localip, Localport}, State#state{localip=Localip}};
 
@@ -425,7 +425,7 @@ handle_command(message, Dir, Cmd, From, State) ->
 
 
 handle_message(call.execute, ans, Cmd, _From, State) ->
-    Peerid = command:fetch_key(peerid, Cmd),
+    Peerid = yate_command:fetch_key(peerid, Cmd),
     State1 = State#state{id=Peerid},
     ok = setup_watches(State1),
     Parent = State#state.parent,
@@ -479,26 +479,26 @@ setup_watches(State) ->
     Id = State#state.id,
     ok = yate:watch(Handle, chan.disconnected,
 		    fun(Cmd) ->
-			    Id == command:fetch_key(id, Cmd)
+			    Id == yate_command:fetch_key(id, Cmd)
 		    end),
     ok = yate:watch(Handle, call.ringing,
 		    fun(Cmd) ->
- 			    Id == command:fetch_key(targetid, Cmd)
+ 			    Id == yate_command:fetch_key(targetid, Cmd)
 		    end),
     ok = yate:watch(Handle, chan.hangup,
 		    fun(Cmd) ->
-			    Id == command:fetch_key(id, Cmd)
+			    Id == yate_command:fetch_key(id, Cmd)
 		    end),
     ok = yate:watch(Handle, call.progress,
 		    fun(Cmd) ->
-			    Id == command:fetch_key(targetid, Cmd)
+			    Id == yate_command:fetch_key(targetid, Cmd)
 		    end),
     ok = yate:watch(Handle, call.answered,
 		    fun(Cmd) ->
-			    Id == command:fetch_key(targetid, Cmd)
+			    Id == yate_command:fetch_key(targetid, Cmd)
 		    end),
     ok = yate:install(Handle, chan.dtmf,
 		      fun(Cmd) ->
-			      Id == command:fetch_key(targetid, Cmd)
+			      Id == yate_command:fetch_key(targetid, Cmd)
 		      end),
     ok.

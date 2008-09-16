@@ -99,7 +99,7 @@ response(Response, YxaCtx) when is_record(Response, response), is_record(YxaCtx,
 %% outgoing yate call
 %%
 call(Client, Cmd, From, Args) when is_record(Cmd, command) ->
-    Id = command:fetch_key(id, Cmd),
+    Id = yate_command:fetch_key(id, Cmd),
     start_link(Client, Id, Cmd, From, Args).
 
 start_link(Client, Request, LogStr) ->
@@ -146,20 +146,20 @@ init([Client, Id, Cmd, From, [SipUri]]) ->
     {ok, Call} = yate_call_reg:get_call(Client, Id, Cmd),
     {ok, Handle} = yate:open(Client),
 
-    NewCmd = command:append_keys([
+    NewCmd = yate_command:append_keys([
 				  {callto, "dumb/"},
 				  {autoring, false}
 				 ],
 				 Cmd),
     yate:ret(From, NewCmd, false),
 
-    Caller = case command:find_key(caller, Cmd) of
+    Caller = case yate_command:find_key(caller, Cmd) of
 		 {ok, Caller1} ->
 		     Caller1;
 		 error ->
 		     "anonymous"
 	     end,
-    CallerName = case command:find_key(callername, Cmd) of
+    CallerName = case yate_command:find_key(callername, Cmd) of
 		     {ok, []} ->
 			 none;
 		     {ok, CallerName1} ->
@@ -392,14 +392,14 @@ handle_info({yate_call, dtmf, Cmd, Call}, StateName, State=#state{call=Call}) ->
     error_logger:info_msg("~p: dtmf ~n", [?MODULE]),
 
     SipCall = State#state.sip_call,
-    Dtmf = command:fetch_key(text, Cmd),
+    Dtmf = yate_command:fetch_key(text, Cmd),
     ok = yate_call:send_dtmf(SipCall, Dtmf),
     {next_state, StateName, State};
 
 handle_info({yate_call, disconnected, Cmd, Call}, StateName, State=#state{call=Call}) ->
     error_logger:info_msg("~p: Call disconnected ~p ~p~n", [?MODULE, Call, StateName]),
     SipCall = State#state.sip_call,
-    case command:find_key(reason, Cmd) of
+    case yate_command:find_key(reason, Cmd) of
 	{ok, YateReason} ->
 	    {Status, Reason} = reason_to_sipstatus(list_to_atom(YateReason)),
 	    ok = sipcall:drop(SipCall, Status, Reason);
@@ -508,7 +508,7 @@ handle_proceeding(Status, Reason, Cmd, State) ->
     SipCall = State#state.sip_call,
 
     {State1, Body1} =
-	case command:find_key(media, Cmd) of
+	case yate_command:find_key(media, Cmd) of
 	    {ok, "yes"} ->
 		{ok, State2, Body2} = get_sdp_body(State),
 		{State2, Body2};

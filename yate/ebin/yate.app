@@ -2,12 +2,12 @@
  [{description, "Yate module"},
   {vsn,"0.0"},
   {modules, [
-             command,
              key_dict,
              key_list,
 	     yate_app,
 	     yate_call,
 	     yate_call_reg,
+             yate_command,
 	     yate_conn,
 	     yate_conn_srv,
 	     yate_decode,

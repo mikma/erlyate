@@ -52,7 +52,7 @@ init([Client, Tag, Pid, Timeout]) ->
     Id = erlang:ref_to_list(make_ref()),
     ok = yate:install(Handle, chan.notify,
 		    fun(Cmd) ->
- 			    Id == command:fetch_key(targetid, Cmd)
+ 			    Id == yate_command:fetch_key(targetid, Cmd)
 		    end),
 
     if
