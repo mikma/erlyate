@@ -1,3 +1,3 @@
-SUBDIRS = yate yate_demo sipclient releases
+SUBDIRS = yate
 
 ACLOCAL_AMFLAGS = -I m4
