@@ -1,7 +1,7 @@
 %%%
 %%% @doc       Yate utilities
 %%% @author    Mikael Magnusson <mikma@users.sourceforge.net>
-%%% @copyright 2006 Mikael Magnusson
+%%% @copyright 2006-2008 Mikael Magnusson
 %%%
 
 -module(yate_util).
@@ -20,6 +20,16 @@ seconds() ->
     MegaSecs * 1000000 + Secs.
 
 
+%%--------------------------------------------------------------------
+%% @spec dict_store_list(List, Dict) -> Dict1
+%%         List = [{Key, Value}]
+%%         Key = term()
+%%         Value = term()
+%%         Dict = term()
+%%         Dict1 = term()
+%% @doc Store a list of key/value pairs in a dictionary.
+%% @end
+%%--------------------------------------------------------------------
 dict_store_list([], Dict) ->
     Dict;
 dict_store_list([{Key, Value}|R], Dict) ->

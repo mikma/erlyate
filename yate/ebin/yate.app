@@ -16,8 +16,8 @@
 	     yate_notify,
 	     yate_pending,
 	     yate_port_srv,
-	     yate_port_sup,
 	     yate_srv,
+	     yate_sup,
 	     yate_test,
 	     yate_util
 	    ]},

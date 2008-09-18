@@ -1,9 +1,9 @@
 %%%
-%%% @doc       Top supervisor
+%%% @doc       Top most supervisor
 %%% @author    Mikael Magnusson <mikma@users.sourceforge.net>
 %%% @copyright 2006 Mikael Magnusson
 %%%
--module(yate_port_sup).
+-module(yate_sup).
 
 -behaviour(supervisor).
 

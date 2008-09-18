@@ -1,7 +1,7 @@
 %%%
-%%% @doc       Yate applictation module
+%%% @doc       Yate application module
 %%% @author    Mikael Magnusson <mikma@users.sourceforge.net>
-%%% @copyright 2006 Mikael Magnusson
+%%% @copyright 2006-2008 Mikael Magnusson
 %%%
 -module(yate_app).
 
@@ -14,9 +14,12 @@
 -export([start/0]).
 
 %% application callbacks
+
+%% @private
 start(normal, []) ->
     start().
 
+%% @private
 stop(_State) ->
     ok.
 
@@ -28,4 +31,4 @@ stop(_State) ->
 %% @end
 %%--------------------------------------------------------------------
 start() ->
-    yate_port_sup:start_link().
+    yate_sup:start_link().

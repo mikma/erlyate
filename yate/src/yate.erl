@@ -32,7 +32,7 @@ start() ->
 %% @end
 %%--------------------------------------------------------------------
 connect(Host, Port) ->
-    yate_port_sup:start_client(Host, Port).
+    yate_sup:start_client(Host, Port).
 
 %%--------------------------------------------------------------------
 %% @spec open(Client) -> Result
@@ -163,7 +163,7 @@ make() ->
 		"yate_decode",
 		"yate_app",
 		"yate_port_srv",
-		"yate_port_sup",
+		"yate_sup",
 		"yate_pending",
 		"yate_call",
 		"yate_notify"
