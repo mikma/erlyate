@@ -147,38 +147,6 @@ queue_msg(Handle, Name, Keys, Tag) ->
 send_msg(Handle, Name, Keys) ->
     call(Handle, {msg, Name, Keys}).
 
-make() ->
-    Modules = [
-		"command",
-		"key_dict",
-		"key_list",
-		"yate_call_reg",
-		"yate_srv",
-		"yate_conn",
-		"yate_encode",
-		"yate_test",
-		"yate_conn_srv",
-		"yate",
-		"yate_util",
-		"yate_decode",
-		"yate_app",
-		"yate_port_srv",
-		"yate_sup",
-		"yate_pending",
-		"yate_call",
-		"yate_notify"
-	    ],
-
-    Prefix = "../../../src/yate/",
-    Files = lists:map(fun(File) -> Prefix ++ File end, Modules),
-
-    make:files(Files,
-	       [load,
-		{i, "../../../include"},
-		{i, "../../src/yate"},
-		{i, "/usr/lib/yxa/include"},
-		{outdir, "../../src/yate"},
-		debug_info]).
 
 %%
 %% private functions
