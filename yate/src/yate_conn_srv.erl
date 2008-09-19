@@ -51,6 +51,7 @@ stop(Pid) ->
 %%
 %% gen_server callbacks
 %%
+%% @private
 init([Host, Port, Pid]) ->
     init([Host, Port, Pid, []]);
 init([Host, Port, Pid, Options]) ->
@@ -76,10 +77,12 @@ do_connect(Host, Port, Options) ->
 	    end
     end.
 
+%% @private
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
 
+%% @private
 handle_call({install, Name, Prio}, From, State) ->
     case dict:is_key(Name, State#sstate.installed) of
 	false ->
@@ -131,6 +134,7 @@ handle_call(Request, _From, State) ->
     {reply, ok, State}.
 
 
+%% @private
 handle_cast(stop, State) ->
     {stop, normal, State};
 handle_cast({ret, Cmd}, State) ->
@@ -145,6 +149,7 @@ handle_cast(Request, State) ->
     {noreply, State}.
 
 
+%% @private
 handle_info({tcp, _Socket, Data}, State) ->
     {ok, NewState} = handle_tcp(Data, State),
     {noreply, NewState};
@@ -159,6 +164,7 @@ handle_info(Info, State) ->
     {noreply, State}.
 
 
+%% @private
 terminate(Reason, _State) ->
     error_logger:error_msg("~p terminated ~p~n", [?MODULE, Reason]),
     terminated.

@@ -70,6 +70,7 @@ stop(Pid) ->
 %%
 %% gen_server callbacks
 %%
+%% @private
 init([Host, Port]) ->
     error_logger:info_msg("Start ~p ~p~n", [?MODULE, self()]),
     error_logger:info_msg("Connecting ~p~n", [?MODULE]),
@@ -79,10 +80,11 @@ init([Host, Port]) ->
     process_flag(trap_exit, true),
     {ok, #sstate{conn=Conn}}.
 
+%% @private
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
-
+%% @private
 %% handle_call({connect, Host, Port}, _From, State) ->
 %%     {ok, Conn} = yate_sup:start_conn(Host, Port, self()),
 %%     {reply, ok, State#sstate{conn=Conn}};
@@ -124,6 +126,7 @@ handle_call(Request, _From, State) ->
     {reply, ok, State}.
 
 
+%% @private
 handle_cast(stop, State) ->
     {stop, normal, State};
 handle_cast(Request, State) ->
@@ -131,6 +134,7 @@ handle_cast(Request, State) ->
     {noreply, State}.
 
 
+%% @private
 handle_info({yate, Dir, Cmd, From}, State) ->
     handle_command(Cmd#command.type, Dir, Cmd, From, State);
 handle_info({cast, {ans, RetValue, RetCmd}, {queue, Pid, Tag}}, State) ->
@@ -158,6 +162,7 @@ handle_info(Info, State) ->
     {noreply, State}.
 
 
+%% @private
 terminate(Reason, _State) ->
     error_logger:error_msg("~p terminated ~p~n", [?MODULE, Reason]),
     terminated.

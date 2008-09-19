@@ -1,7 +1,7 @@
 %%%
 %%% @doc       Command encoder
 %%% @author    Mikael Magnusson <mikma@users.sourceforge.net>
-%%% @copyright 2006 Mikael Magnusson
+%%% @copyright 2006-2008 Mikael Magnusson
 %%%
 -module(yate_encode).
 
@@ -72,6 +72,12 @@ encode_params(Type, [H|R], Res) ->
     ParamStr = encode_param(Type, H),
     encode_params(Type, R, Res ++ ":" ++ ParamStr).
 
+%%--------------------------------------------------------------------
+%% @spec encode_dict(Type, Dict) -> string()
+%%           Type = connect|install|uninstall|watch|unwatch|message
+%% @doc Encode dict into string
+%% @end
+%%--------------------------------------------------------------------
 encode_dict(_Type, undefined) ->
     [];
 encode_dict(Type, Dict) ->
@@ -79,6 +85,15 @@ encode_dict(Type, Dict) ->
     {Type, Res} = dict:fold(Fun, {Type, []}, Dict),
     Res.
 
+%%--------------------------------------------------------------------
+%% @spec encode_list(Type, List) -> string()
+%%           Type = connect|install|uninstall|watch|unwatch|message
+%%           List = [{Key, Value}]
+%%           Key = atom()
+%%           Value = integer() | atom() | reference() | string()
+%% @doc Encode dict into string
+%% @end
+%%--------------------------------------------------------------------
 encode_list(_Type, undefined) ->
     [];
 encode_list(Type, List) ->

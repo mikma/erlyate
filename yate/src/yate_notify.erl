@@ -1,3 +1,8 @@
+%%%
+%%% @doc       Notifier
+%%% @author    Mikael Magnusson <mikma@users.sourceforge.net>
+%%% @copyright 2006-2008 Mikael Magnusson
+%%%
 -module(yate_notify).
 
 -include("yate.hrl").
@@ -30,22 +35,42 @@
 
 -define(SERVER, ?MODULE).
 
+
+%%
+%% @spec start_link(Client, Tag::any(), Pid::pid()) -> {ok, pid()}|{error, Reason::any()}
+%% @doc Start notify process 
+%%
 start_link(Client, Tag, Pid) ->
     start_link(Client, Tag, Pid, unlimited).
 
+%%
+%% @spec start_link(Client, Tag::any(), Pid::pid(), Timeout) -> {ok, pid()}|{error, Reason::any()}
+%%         Timeout = integer() | unlimited
+%% @doc Start notify process 
+%%
 start_link(Client, Tag, Pid, Timeout) ->
     {ok, NotifyPid} = gen_server:start_link(?MODULE, [Client, Tag, Pid, Timeout], []),
     {ok, NotifyPid}.
 
+%%
+%% @spec get_id(NotifyPid::pid()) -> string()
+%% @doc Return unique id used to identify the notify process in yate messages.
+%%
 get_id(NotifyPid) ->
     gen_server:call(NotifyPid, get_id).
 
+
+%%
+%% @spec stop() -> any()
+%% @doc Stop notifier process
+%%
 stop() ->
     gen_server:cast(?SERVER, stop).
 
 %%
 %% gen_server callbacks
 %%
+%% @private
 init([Client, Tag, Pid, Timeout]) ->
     link(Pid),
     {ok, Handle} = yate:open(Client),
@@ -65,18 +90,22 @@ init([Client, Tag, Pid, Timeout]) ->
     {ok, #state{client=Client,handle=Handle,tag=Tag,pid=Pid,id=Id}}.
 
 
+%% @private
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
 
+%% @private
 handle_call(get_id, _From, State) ->
     {reply, {ok, State#state.id}, State};
 
+%% @private
 handle_call(Request, _From, State) ->
     error_logger:error_msg("Unhandled call in ~p: ~p~n", [?MODULE, Request]),
     {reply, ok, State}.
 
 
+%% @private
 handle_cast(stop, State) ->
     {stop, normal, State};
 handle_cast(Request, State) ->
@@ -84,6 +113,7 @@ handle_cast(Request, State) ->
     {noreply, State}.
 
 
+%% @private
 handle_info({yate, Dir, Cmd, From}, State) ->
     handle_command(Cmd#command.type, Dir, Cmd, From, State);
 handle_info(timeout, State) ->
@@ -95,6 +125,7 @@ handle_info(Info, State) ->
     {noreply, State}.
 
 
+%% @private
 terminate(_Reason, State) ->
     yate:close(State#state.handle),
     terminated.

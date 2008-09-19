@@ -22,8 +22,7 @@
 	     yate_util
 	    ]},
   {registered, [
-		yate_sup,
-		yate_reg_srv
+		yate_sup
 	       ]},
   {mod, {yate_app, []}},
   {env, []},

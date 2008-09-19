@@ -1,3 +1,8 @@
+%%%
+%%% @doc       Yate call
+%%% @author    Mikael Magnusson <mikma@users.sourceforge.net>
+%%% @copyright 2006-2008 Mikael Magnusson
+%%%
 -module(yate_call).
 
 -behaviour(gen_server).
@@ -37,55 +42,145 @@
 	  status				% incoming or outgoing
 	 }).
 
+%%--------------------------------------------------------------------
+%% @spec start_link(Client) -> Result
+%%           Client = pid()
+%% @doc Start an outgoing call, setting caller as owner
+%% @end
+%%--------------------------------------------------------------------
 start_link(Client) when is_pid(Client) ->
     start_link(Client, self()).
 
+%%--------------------------------------------------------------------
+%% @spec start_link(Client, Owner) -> Result
+%%           Client = pid()
+%%           Owner = pid()
+%% @doc Start an outgoing call, with specified owner.
+%% @end
+%%--------------------------------------------------------------------
 start_link(Client, Owner) when is_pid(Client), is_pid(Owner) ->
     gen_server:start_link(?MODULE, [Client, Owner], []);
 
+%%--------------------------------------------------------------------
+%% @spec start_link(Client, Cmd) -> Result
+%%           Client = pid()
+%% @doc Start an incoming call, setting caller as owner.
+%% @end
+%%--------------------------------------------------------------------
 start_link(Client, Cmd) ->
     start_link(Client, Cmd, self()).
 
+%%--------------------------------------------------------------------
+%% @spec start_link(Client, Cmd, Owner) -> Result
+%%           Client = pid()
+%%           Owner = pid()
+%% @doc Start an incoming call, with specified owner.
+%% @end
+%%--------------------------------------------------------------------
 start_link(Client, Cmd, Owner) ->
     gen_server:start_link(?MODULE, [Client, Cmd, Owner], []).
 
+%%--------------------------------------------------------------------
+%% @spec execute(Call, Keys) -> Result
+%%           Keys = [{Key, Value}]
+%%           Key = atom()
+%% @doc Execute an outbound call.
+%% @end
+%%--------------------------------------------------------------------
 execute(Call, Keys) ->
     gen_server:call(Call, {execute, Keys}).
 
+%%--------------------------------------------------------------------
+%% @spec answer(Call) -> Result
+%% @doc Answer an incoming call.
+%% @end
+%%--------------------------------------------------------------------
 answer(Call) ->
     gen_server:call(Call, answer).
 
+%%--------------------------------------------------------------------
+%% @spec drop(Call) -> Result
+%% @doc Hangup a call.
+%% @end
+%%--------------------------------------------------------------------
 drop(Call) ->
     drop(Call, "hangup").
 
+%%--------------------------------------------------------------------
+%% @spec drop(Call, Reason) -> Result
+%%           Reason = string()
+%% @doc Hangup a call, giving a reason.
+%% @end
+%%--------------------------------------------------------------------
 drop(Call, Reason) ->
     gen_server:call(Call, {drop, Reason}).
 
+%%--------------------------------------------------------------------
+%% @spec play_wave(Call, Notify, WaveFile) -> Result
+%%           WaveFile = string()
+%% @doc Play a sound file. 
+%% @end
+%%--------------------------------------------------------------------
 play_wave(Call, Notify, WaveFile) ->
     error_logger:info_msg("play_wave ~p ~p ~p~n", [?MODULE, self(), Notify]),
     gen_server:call(Call, {play_wave, Notify, WaveFile, self()}).
 
+%%--------------------------------------------------------------------
+%% @spec play_tone(Call, Tone) -> Result
+%% @doc Play a tone. 
+%% @end
+%%--------------------------------------------------------------------
 play_tone(Call, Tone) ->
     error_logger:info_msg("play_tone ~p ~p ~p~n", [?MODULE, self(), Tone]),
     gen_server:call(Call, {play_tone, Tone}).
 
+%%--------------------------------------------------------------------
+%% @spec record_wave(Call, Notify, WaveFile, MaxLen) -> Result
+%% @doc Play a sound file.
+%% @end
+%%--------------------------------------------------------------------
 record_wave(Call, Notify, WaveFile, MaxLen) ->
     gen_server:call(Call, {record_wave, Notify, WaveFile, MaxLen, self()}).
 
+%%--------------------------------------------------------------------
+%% @spec start_rtp(Call, Remote_address, Remote_port) -> Result
+%% @doc Start rtp transmission.
+%% @end
+%%--------------------------------------------------------------------
 start_rtp(Call, Remote_address, Remote_port) ->
     error_logger:info_msg("~p: start_rtp~n", [?MODULE]),
     gen_server:call(Call, {start_rtp, Remote_address, Remote_port}).
 
+%%--------------------------------------------------------------------
+%% @spec start_rtp(Call, Remote_address) -> Result
+%% @doc Start rtp transmission.
+%% @end
+%%--------------------------------------------------------------------
 start_rtp(Call, Remote_address) ->
     error_logger:info_msg("~p: start_rtp~n", [?MODULE]),
     gen_server:call(Call, {start_rtp, Remote_address}).
 
+%%--------------------------------------------------------------------
+%% @spec send_dtmf(Call, Dtmf) -> Result
+%% @doc Send dtmf key.
+%% @end
+%%--------------------------------------------------------------------
 send_dtmf(Call, Dtmf) ->
     gen_server:call(Call, {send_dtmf, Dtmf}).
 
+%%--------------------------------------------------------------------
+%% @spec ringing(Call) -> Result
+%% @doc Send ringing on incoming call.
+%% @end
+%%--------------------------------------------------------------------
 ringing(Call) ->
     gen_server:call(Call, ringing).
 
+%%--------------------------------------------------------------------
+%% @spec progress(Call) -> Result
+%% @doc Send session progress on incoming call.
+%% @end
+%%--------------------------------------------------------------------
 progress(Call) ->
     gen_server:call(Call, progress).
 
@@ -95,6 +190,7 @@ stop(Call) ->
 %%
 %% gen_server callbacks
 %%
+%% @private
 init([Client, Parent]) ->
     init_common(outgoing, Client, [], Parent);
 
@@ -154,9 +250,11 @@ fetch_auto_keys(Cmd, [Key|R], Res) ->
     end.
 
 
+%% @private
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
+%% @private
 handle_call({execute, Keys}, _From, State) ->
     Handle = State#state.handle,
     Parent = State#state.parent,
@@ -181,6 +279,7 @@ handle_call({execute, Keys}, _From, State) ->
     end;
 
 
+%% @private
 handle_call(answer, _From, State) ->
     Id = State#state.id,
     Handle = State#state.handle,
@@ -384,6 +483,7 @@ handle_call(Request, _From, State) ->
     {reply, ok, State}.
 
 
+%% @private
 handle_cast(stop, State) ->
     error_logger:error_msg("~p:stop received ~p~n", [?MODULE, self()]),
     {stop, normal, State};
@@ -392,6 +492,7 @@ handle_cast(Request, State) ->
     {noreply, State}.
 
 
+%% @private
 handle_info({yate, Dir, Cmd, From}, State) ->
     error_logger:error_msg("~p:received cmd ~p~n", [?MODULE, self()]),
     handle_command(Cmd#command.type, Dir, Cmd, From, State);
@@ -411,6 +512,7 @@ handle_info(Info, State) ->
     {noreply, State}.
 
 
+%% @private
 terminate(Reason, State) ->
     error_logger:error_msg("~p: Terminating ~p~n", [?MODULE, Reason]),
     Handle = State#state.handle,

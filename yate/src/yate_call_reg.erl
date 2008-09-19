@@ -1,3 +1,8 @@
+%%%
+%%% @doc       Call registry
+%%% @author    Mikael Magnusson <mikma@users.sourceforge.net>
+%%% @copyright 2006-2008 Mikael Magnusson
+%%%
 -module(yate_call_reg).
 
 -behaviour(gen_server).
@@ -27,21 +32,39 @@
 
 -define(SERVER, ?MODULE).
 
+%%
+%% @doc Start call register server
+%%
 start_link() ->
     gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
 
+%%
+%% @doc Stop call register server
+%%
 stop() ->
     gen_server:cast(?SERVER, stop).
 
+%%
+%% @doc Register call
+%%
 register_call(Id, Call) ->
     gen_server:call(?SERVER, {register_call, Id, Call}).
 
+%%
+%% @doc Unregister call
+%%
 unregister_call(Call) ->
     gen_server:call(?SERVER, {unregister_call, Call}).
 
+%%
+%% @doc Lookup call
+%%
 get_call(Id) ->
     gen_server:call(?SERVER, {get_call, Id}).
 
+%%
+%% @doc Lookup call
+%%
 get_call(Client, Id, ExecCmd) ->
     gen_server:call(?SERVER, {get_call, Client, Id, ExecCmd, self()}).
 
@@ -51,14 +74,17 @@ execute_call(Client) ->
 %%
 %% gen_server callbacks
 %%
+%% @private
 init([]) ->
     {ok, #state{}}.
 
 
+%% @private
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
 
+%% @private
 handle_call({get_call, Id}, _From, State) ->
     Calls = State#state.calls,
     case lists:keysearch(Id, 1, Calls) of
@@ -114,6 +140,7 @@ handle_call(Request, _From, State) ->
     {reply, ok, State}.
 
 
+%% @private
 handle_cast(stop, State) ->
     {stop, normal, State};
 handle_cast(Request, State) ->
@@ -121,10 +148,12 @@ handle_cast(Request, State) ->
     {noreply, State}.
 
 
+%% @private
 handle_info(Info, State) ->
     error_logger:error_msg("Unsupported info in ~p: ~p~n", [?MODULE, Info]),
     {noreply, State}.
 
 
+%% @private
 terminate(_Reason, _State) ->
     terminated.

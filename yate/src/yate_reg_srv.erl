@@ -1,3 +1,8 @@
+%%%
+%%% @doc       yate_reg_srv
+%%% @author    Mikael Magnusson <mikma@users.sourceforge.net>
+%%% @copyright 2006-2008 Mikael Magnusson
+%%%
 -module(yate_reg_srv).
 
 -behaviour(gen_server).
@@ -30,14 +35,17 @@ get_conn(Host, Port) ->
 %%
 %% gen_server callbacks
 %%
+%% @private
 init([]) ->
     {ok, #sstate{}}.
 
 
+%% @private
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
 
+%% @private
 handle_call({get_conn, Host, Port, Pid}, _From, State) ->
     Id = {conn, Host, Port},
     case dict:find(Id, State#sstate.connections) of
@@ -53,6 +61,7 @@ handle_call(Request, _From, State) ->
     {reply, ok, State}.
 
 
+%% @private
 handle_cast(stop, State) ->
     {stop, normal, State};
 handle_cast(Request, State) ->
@@ -65,5 +74,6 @@ handle_info(Info, State) ->
     {noreply, State}.
 
 
+%% @private
 terminate(_Reason, _State) ->
     terminated.

@@ -39,6 +39,7 @@ start_client(Host, Port) ->
     supervisor:start_child(?SERVER, ChildSpec).
 
 
+%% @private
 init(_Args) ->
     ok = error_logger:logfile({open, "yate.log"}),
     PortSpec = {yate_port_srv, {yate_port_srv, start_link, []},

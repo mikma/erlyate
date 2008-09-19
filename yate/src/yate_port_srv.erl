@@ -1,7 +1,8 @@
 %%%
-%%% @doc       Yate port controller server
+%%% @doc       Yate process port controller server.
+%%%            This server starts and supervices the yate pbx process.
 %%% @author    Mikael Magnusson <mikma@users.sourceforge.net>
-%%% @copyright 2006 Mikael Magnusson
+%%% @copyright 2006-2008 Mikael Magnusson
 %%%
 %%% TODO: Add log output
 %%%
@@ -53,6 +54,7 @@ stop() ->
 %%
 %% gen_server callbacks
 %%
+%% @private
 init([]) ->
     Yate = os:getenv("YATE"),
     if
@@ -76,10 +78,12 @@ init([]) ->
     {ok, #sstate{port=Port}}.
 
 
+%% @private
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
 
+%% @private
 handle_call(wait_running, From, State) ->
     case State#sstate.state of
 	running ->
@@ -93,6 +97,7 @@ handle_call(Request, _From, State) ->
     {reply, ok, State}.
 
 
+%% @private
 handle_cast(stop, State) ->
     {stop, normal, State};
 handle_cast(Request, State) ->
@@ -100,6 +105,7 @@ handle_cast(Request, State) ->
     {noreply, State}.
 
 
+%% @private
 handle_info({Port, Request}, State) when Port == State#sstate.port ->
     handle_port(Request, State);
 handle_info(timeout, State) ->
@@ -150,6 +156,7 @@ handle_data({noeol, Text}, State) ->
     {ok, State}.
 
 
+%% @private
 terminate(Reason, State) ->
     error_logger:info_msg("Terminating in ~p ~p~n", [?MODULE, Reason]),
     kill(State#sstate.pid),

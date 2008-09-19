@@ -1,6 +1,6 @@
 %%
-%% Send command sequencially to targets until one returns true
-%% or all are tried
+%% @doc Send command sequencially to targets until one returns true or
+%%      all are tried
 %%
 -module(yate_pending).
 
@@ -33,7 +33,7 @@ stop() ->
 
 %%
 %% gen_server callbacks
-%%
+%% @private
 init([Conn, Cmd, EntryList]) ->
     Header = Cmd#command.header,
     Name = Header#message.name,
@@ -49,20 +49,24 @@ init([Conn, Cmd, EntryList]) ->
     end.
 
 
+%% @private
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
 
+%% @private
 handle_call(_Request, _From, _State) ->
     exit(unhandled_call).
 
 
+%% @private
 handle_cast(stop, State) ->
     {stop, normal, State};
 handle_cast(_Request, _State) ->
     exit(unhandled_cast).
 
 
+%% @private
 handle_info({ret, Cmd}, State) ->
     Success = Cmd#command.success,
     handle_ret(Success, Cmd, State);
@@ -72,6 +76,7 @@ handle_info(_Info, _State) ->
     exit(unhandled_info).
 
 
+%% @private
 terminate(_Reason, _State) ->
     terminated.
 
