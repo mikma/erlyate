@@ -12,9 +12,6 @@
 %% api
 -export([start_link/0, stop/0, run/0]).
 
-%% debug
--export([make/0]).
-
 %% gen_server callbacks
 -export([init/1,
 	 code_change/3,
@@ -155,7 +152,7 @@ handle_call_execute("erl/" ++ String, Cmd, From, State) ->
 	    ok
     end,
     {noreply, State};
-handle_call_execute(Called, _Cmd, _From, State) ->
+handle_call_execute(_Called, _Cmd, _From, State) ->
 %%     error_logger:info_msg("Unhandled call.execute to: ~p~n", [Called]),
     {reply, false, State}.
 
@@ -175,21 +172,3 @@ handle_call_route("y600", _Cmd, _From, State) ->
 handle_call_route(Called, _Cmd, _From, State) ->
     error_logger:error_msg("Unhandled call.route to: ~p~n", [Called]),
     {reply, false, State}.
-
-make() ->
-    Modules = [
-		"yate_clock",
-		"yate_demo_call",
-		"yate_demo",
-		"yate_demo_sup",
-		"yate_demo_app"
-	    ],
-
-    Prefix = "../../../src/yate_demo/",
-    Files = lists:map(fun(File) -> Prefix ++ File end, Modules),
-
-    make:files(Files,
-	       [load,
-		{i, "../../../src/yate"},
-		{outdir, "../../src/yate_demo"},
-		debug_info]).
