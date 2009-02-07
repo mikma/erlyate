@@ -1,6 +1,6 @@
 {application, yate,
  [{description, "Yate module"},
-  {vsn,"0.0"},
+  {vsn,"0.1.0"},
   {modules, [
              key_dict,
              key_list,
