@@ -41,6 +41,21 @@ handle_call_route("reason=" ++ ReasonStr, _Cmd, _From, State) ->
     {reply, {true, "reason/" ++ ReasonStr}, State};
 
 
+Supervision hieararchy
+----------------------
+
+yate_sup
+|
++-yate_port_srv
+|
++-yate_call_reg
+|
++-X*yate_srv
+  |
+  +-yate_conn_srv
+=======
+
+
 Build command
 -------------
   $ ../configure ERL_FLAGS=-pz /home/mikael/tmp/cvs/yxa.d/trunk/working.bugfix/build_linux/ebin ERLCFLAGS=-I/home/mikael/tmp/cvs/yxa.d/trunk/bugfix/src/include -I/home/mikael/svn/esipua/sipua/include YATE=/home/mikael/tmp/cvs/yate/build_linux/run
