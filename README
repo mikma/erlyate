@@ -39,3 +39,9 @@ handle_call_route("ydial", _Cmd, _From, State) ->
     {reply, {true, "sip/sip:99991001@192.168.0.7:5072"}, State};
 handle_call_route("reason=" ++ ReasonStr, _Cmd, _From, State) ->
     {reply, {true, "reason/" ++ ReasonStr}, State};
+
+
+Build command
+-------------
+  $ ../configure ERL_FLAGS=-pz /home/mikael/tmp/cvs/yxa.d/trunk/working.bugfix/build_linux/ebin ERLCFLAGS=-I/home/mikael/tmp/cvs/yxa.d/trunk/bugfix/src/include -I/home/mikael/svn/esipua/sipua/include YATE=/home/mikael/tmp/cvs/yate/build_linux/run
+
