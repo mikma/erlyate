@@ -8,7 +8,7 @@ AC_CONFIG_SRCDIR([configure.ac])
 dnl AC_CANONICAL_HOST
 dnl AC_CANONICAL_TARGET
 
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([foreign])
 
 dnl AM_CONFIG_HEADER([config.h])
 
