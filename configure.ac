@@ -48,6 +48,7 @@ AC_SUBST(ERL_FLAGS)
 
 AC_CONFIG_FILES([
 		 Makefile
+		 include/Makefile
 		 yate/Makefile
 		 yate/include/Makefile
 		 yate/c_src/Makefile
