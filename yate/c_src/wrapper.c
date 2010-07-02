@@ -52,7 +52,11 @@ int loop(int child, int fdin, int fdout)
 		    return 1;
 		}
 	    } else if (len > 0) {
-		write(fdout, buf, len);
+		res = write(fdout, buf, len);
+		if ( res < 0 ) {
+		    perror("write");
+		    return 1;
+		}
 	    }
 	}
 
@@ -84,7 +88,11 @@ int loop(int child, int fdin, int fdout)
 
 		return 0;
 	    } else if (len > 0) {
-		write(1, buf, len);
+		res = write(1, buf, len);
+		if ( res < 0 ) {
+		    perror("write");
+		    return 1;
+		}
 	    }
 	}
     }
@@ -104,7 +112,10 @@ int main(int argc, char *argv[])
     }
 
     directory = argv[1];
-    chdir(directory);
+    if ( chdir(directory) < 0 ) {
+	perror("chdir");
+	return 1;
+    }
 
     args = (char **)calloc(argc, sizeof(args[0]));
     args[argc - 2] = NULL;
