@@ -1,1 +1,1 @@
-SUBDIRS = priv
+SUBDIRS = priv src
