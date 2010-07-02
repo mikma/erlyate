@@ -1,7 +1,7 @@
-%% Erlang OTP R11B-1 library versions
-{release, {"Yate demo module","0.0"}, {erts, "5.2"},
+{release, {"Yate demo module","0.1.0"},
+ {erts, "@ERLANG_ERTS_VER@"},
  [{kernel,"@ERLANG_LIB_VER_kernel@"},
   {stdlib,"@ERLANG_LIB_VER_stdlib@"},
   {sasl,"@ERLANG_LIB_VER_sasl@"},
-  {yate, "0.0"},
-  {yate_demo, "0.0"}]}.
+  {yate, "0.1.0"},
+  {yate_demo, "0.1.0"}]}.
