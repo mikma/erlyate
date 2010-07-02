@@ -8,3 +8,5 @@ all-local:
 clean-local:
 	sinan clean
 
+run:
+	$(ERL) $(AM_ERL_FLAGS) $(ERL_FLAGS) -name yate
