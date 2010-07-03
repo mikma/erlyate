@@ -51,7 +51,7 @@ AC_CONFIG_FILES([
 		 Makefile
 		 yate/Makefile
 		 yate/include/Makefile
-		 yate/priv/Makefile
+		 yate/c_src/Makefile
 		 yate/src/Makefile
 		 yate_demo/Makefile
 		 yate_demo/src/Makefile

@@ -1,4 +1,4 @@
-SUBDIRS = priv src
+SUBDIRS = c_src src
 
 all-local:
 	test -L ebin || ln -s src ebin
