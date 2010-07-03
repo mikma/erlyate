@@ -6,11 +6,12 @@ AM_ERL_FLAGS = -pa $(top_builddir)/yate/ebin -pa			\
 $(top_builddir)/yate_demo/ebin -pa $(top_builddir)/sipclient/ebin
 
 run:
-	$(ERL) $(AM_ERL_FLAGS) $(ERL_FLAGS) -name yate
-# -s systools make_tar sipb2bua -s init exit
+	YATE=$(YATE) $(ERL) $(AM_ERL_FLAGS) $(ERL_FLAGS) -name yate
 
 run-yatedemo:
-	$(ERL) $(AM_ERL_FLAGS) $(ERL_FLAGS) -boot yate_demo -name yate
+	YATE=$(YATE) $(ERL) $(AM_ERL_FLAGS) $(ERL_FLAGS) -name yate -boot yate_demo -sasl sasl_error_logger '{file,"sasl.log"}'
 
 run-sipclient:
-	$(ERL) $(AM_ERL_FLAGS) $(ERL_FLAGS) -name erlyate -boot sipclient -sasl sasl_error_logger '{file,"sasl.log"}' -mnesia dir '"/var/tmp/mnesia/erlyate"' -yxa_config sipclient.config -s tv start
+	$(ERL) $(AM_ERL_FLAGS) $(ERL_FLAGS) -name yate -boot sipclient -sasl sasl_error_logger '{file,"sasl.log"}' -mnesia dir '"/var/tmp/mnesia/erlyate"' -yxa_config sipclient.config -s tv start
+
+
