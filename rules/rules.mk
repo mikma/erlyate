@@ -1,4 +1,5 @@
 SUBST = sed $(ERLANG_LIB_VER_SUBST) \
+	-e 's,[@]VERSION[@],$(VERSION),g' \
 	-e 's,[@]ERLANG_ERTS_VER[@],$(ERLANG_ERTS_VER),g' \
 	-e 's/[@]$(OTP_APP)_VSN[@]/$($(OTP_APP)_VSN)/'
 

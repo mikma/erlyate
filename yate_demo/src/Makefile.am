@@ -2,7 +2,7 @@ include $(top_srcdir)/rules/app.mk
 
 OTP_APP = yate_demo
 
-yate_demo_VSN = 1.0
+yate_demo_VSN = $(VERSION)
 
 yate_demo_SRCS = \
 yate_clock.erl \

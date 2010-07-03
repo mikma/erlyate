@@ -1,6 +1,6 @@
 {application, yate_demo,
  [{description, "Yate demo module"},
-  {vsn,"0.1.0"},
+  {vsn,"@VERSION@"},
   {modules, [
 	     yate_demo_app,
 	     yate_demo_sup,

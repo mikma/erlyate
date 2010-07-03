@@ -2,7 +2,7 @@ include $(top_srcdir)/rules/app.mk
 
 OTP_APP = yate
 
-yate_VSN = 1.0
+yate_VSN = $(VERSION)
 
 yate_HDRS = \
 yate.hrl
