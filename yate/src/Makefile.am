@@ -25,3 +25,6 @@ yate_srv.erl \
 yate_sup.erl \
 yate_test.erl \
 yate_util.erl
+
+yate_HDRS = \
+yate.hrl
