@@ -15,4 +15,4 @@ AM_ERL_FLAGS = -pz ../../yate/ebin
 AM_ERLCFLAGS = -I$(srcdir)/../../yate/include
 
 run:
-	$(ERL) $(AM_ERL_FLAGS) $(ERL_FLAGS) -name eryate -boot yate_demo -sasl sasl_error_logger '{file,"sasl.log"}' -mnesia dir '"/var/tmp/mnesia/eryate"' -s appmon start
+	$(ERL) $(AM_ERL_FLAGS) $(ERL_FLAGS) -name erlyate -boot yate_demo -sasl sasl_error_logger '{file,"sasl.log"}' -mnesia dir '"/var/tmp/mnesia/erlyate"' -s appmon start

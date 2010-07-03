@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT(eryate, 0.1, [Mikael Magnusson <mikma@users.sourceforge.net>])
+AC_INIT(erlyate, 0.1, [Mikael Magnusson <mikma@users.sourceforge.net>])
 AC_CONFIG_SRCDIR([configure.ac])
 
 dnl AC_CANONICAL_HOST
