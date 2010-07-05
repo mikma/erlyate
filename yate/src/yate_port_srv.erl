@@ -65,10 +65,17 @@ init([]) ->
     end,
 
     Dirname = filename:dirname(Yate),
-    Basename = filename:basename(Yate),
-    error_logger:info_msg("~p: Before wrapper~n", [?MODULE]),
+    error_logger:info_msg("~p: Before wrapper ~s~n", [?MODULE, Yate]),
     Wrapper = get_wrapper(),
-    Args = "-vvv",
+    {ok, Configdir} = application:get_env(yateconfdir),
+    Yateargs =
+        case application:get_env(yateargs) of
+            {ok, Value} when is_list(Value) ->
+                Value ++ " ";
+            undefined ->
+                "-vvv "
+        end,
+    Args = Yateargs ++ "-c " ++ Configdir,
     Prog = Wrapper ++ " " ++ Dirname ++ " " ++ Yate ++ " " ++ Args,
     error_logger:info_msg("~p: Prog ~p~n", [?MODULE, Prog]),
     Port = erlang:open_port({spawn, Prog},
@@ -141,7 +148,7 @@ handle_data({eol, String}, State) when State#sstate.state == startup ->
     Pid = list_to_integer(PidStr),
     error_logger:info_msg("Yate pid ~p~n", [Pid]),
     {ok, State#sstate{pid=Pid,state=starting}};
-handle_data({eol, "Yate engine is initialized and starting up" ++ Extra}, State) ->
+handle_data({eol, "Yate engine is initialized and starting up" ++ _Extra}, State) ->
     error_logger:info_msg("Yate ready!~n"),
     Fun = fun(From) -> gen_server:reply(From, ok) end,
     lists:map(Fun, State#sstate.waiting),
