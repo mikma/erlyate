@@ -7,7 +7,7 @@
 
 %% api
 %%-export([connect/2, stop/1, install/2, install/3, uninstall/2, watch/2, unwatch/2, ret/3, ret/4, queue_msg/3, send_msg/3]).
--export([connect/2, open/1, dup/1, close/1, install/3, uninstall/2, watch/3, unwatch/2, ret/3, ret/4, queue_msg/4, send_msg/3]).
+-export([connect/2, open/1, dup/1, close/1, install/2, install/3, uninstall/2, watch/3, unwatch/2, ret/3, ret/4, queue_msg/4, send_msg/3]).
 
 -export([start/0]).
 
@@ -77,6 +77,17 @@ unwatch(Handle, Name) ->
     call(Handle, {unwatch, Name}).
 
 %%--------------------------------------------------------------------
+%% @spec install(Handle, Name) -> ok
+%%           Handle = pid()
+%%           Name = atom()
+%%           Cmd = #command{}
+%% @doc install message handler
+%% @end
+%%--------------------------------------------------------------------
+install(Handle, Name) ->
+    install(Handle, Name, fun true_func/1).
+
+%%--------------------------------------------------------------------
 %% @spec install(Handle, Name, Fun) -> ok
 %%           Handle = pid()
 %%           Name = atom()
@@ -88,7 +99,6 @@ unwatch(Handle, Name) ->
 %%--------------------------------------------------------------------
 install(Handle, Name, Fun) ->
     call(Handle, {install, Name, Fun}).
-
 
 %%--------------------------------------------------------------------
 %% @spec uninstall(Handle, Name) -> ok
@@ -156,3 +166,6 @@ call({yate_client, Handle, UserPid}, Request) ->
 
 cast({yate_client, Handle, UserPid}, Request) ->
     gen_server:cast(Handle, {client, Request, UserPid}).
+
+true_func(_Cmd) ->
+    true.

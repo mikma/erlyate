@@ -68,14 +68,8 @@ init([]) ->
     {tcp, Host, Port} = yate_config:get_extmodule_listener(Config, "erlyate"),
     {ok, Client} = yate:connect(Host, Port),
     {ok, Handle} = yate:open(Client),
-    ok = yate:install(Handle, call.route, 
-		      fun(_Cmd) ->
-			      true
-		      end),
-    ok = yate:install(Handle, call.execute,
-		      fun(_Cmd) ->
-			      true
-		      end),
+    ok = yate:install(Handle, call.route),
+    ok = yate:install(Handle, call.execute),
     {ok, #state{handle=Handle, client=Client}}.
 
 
