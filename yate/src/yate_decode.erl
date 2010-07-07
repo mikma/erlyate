@@ -73,17 +73,17 @@ list_to_boolean("false") ->
     false.
 
 decode_success(Str) ->
-    list_to_atom(Str).
+    list_to_existing_atom(Str).
 
 decode_id(IdStr) ->
-    %%list_to_atom(IdStr).
+    %%list_to_existing_atom(IdStr).
     IdStr.
 
 decode_time(TimeStr) ->
     list_to_integer(TimeStr).
 
 decode_name(NameStr) ->
-    list_to_atom(NameStr).
+    list_to_existing_atom(NameStr).
 
 decode_data(Data) ->
     "%%" ++ Body = string:strip(Data, right, $\n),
@@ -124,7 +124,7 @@ unescape_string([C|R], Res) ->
     unescape_string(R, Res ++ [C]).
 
 decode_type(TypeStr) ->
-    list_to_atom(TypeStr).
+    list_to_existing_atom(TypeStr).
 
 decode_dir(">") ->
     req;

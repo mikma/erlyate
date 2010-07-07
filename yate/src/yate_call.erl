@@ -303,7 +303,7 @@ handle_call({play_wave, Notify, WaveFile, Pid}, _From, State) ->
     {ok, NotifyId} = yate_notify:get_id(NotifyPid),
     {ok, _RetValue, _RetCmd} =
 	yate:send_msg(Handle, chan.masquerade,
-		      [{message, "chan.attach"},
+		      [{message, chan.attach},
 		       {id, Id},
 		       {notify, NotifyId},
 		       {source, ["wave/play/", WaveFile]}
@@ -315,7 +315,7 @@ handle_call({play_tone, Tone}, _From, State) ->
     Handle = State#state.handle,
     {ok, _RetValue, _RetCmd} =
 	yate:send_msg(Handle, chan.masquerade,
-		      [{message, "chan.attach"},
+		      [{message, chan.attach},
 		       {id, Id},
 		       {source, "tone/" ++ Tone}]),
     {reply, ok, State};
@@ -336,7 +336,7 @@ handle_call({record_wave, Notify, WaveFile, MaxLen, Pid}, _From, State) ->
 
     {ok, _RetValue, _RetCmd} =
 	yate:send_msg(Handle, chan.masquerade,
-		      [{message, "chan.attach"},
+		      [{message, chan.attach},
 		       {id, Id},
 		       {notify, NotifyId},
 		       {consumer, ["wave/record/", WaveFile]}
@@ -345,7 +345,7 @@ handle_call({record_wave, Notify, WaveFile, MaxLen, Pid}, _From, State) ->
 %%     PeerId = State#state.peerid,
 %%     {ok, _RetValue1, _RetCmd1} =
 %% 	yate:send_msg(Handle, chan.masquerade,
-%% 		      [{message, "call.execute"},
+%% 		      [{message, call.execute},
 %%  		       {id, PeerId},
 %% %% 		       {lonely, true},
 %% %% 		       {voice, false},
@@ -441,7 +441,7 @@ handle_call(ringing, _From, State) ->
     {ok, _RetValue, _RetCmd} =
 	yate:send_msg(Handle, chan.masquerade,
 		      [
-		       {message, "call.ringing"},
+		       {message, call.ringing},
  		       {id, Id},
 		       {module, "erlang"}
 		      ]),
@@ -454,7 +454,7 @@ handle_call(progress, _From, State) ->
     {ok, _RetValue, _RetCmd} =
 	yate:send_msg(Handle, chan.masquerade,
 		      [
-		       {message, "call.progress"},
+		       {message, call.progress},
  		       {id, Id},
 		       {module, "erlang"},
 		       %% FIXME enable only if available.
@@ -471,7 +471,7 @@ handle_call({send_dtmf, Dtmf}, _From, State) ->
     ok =
 	yate:queue_msg(Handle, chan.masquerade,
 		      [
-		       {message, "chan.dtmf"},
+		       {message, chan.dtmf},
  		       {id, Id},
 		       {targetid, Rtpid},
 		       {text, Dtmf}
@@ -568,7 +568,7 @@ handle_drop(Reason, State) ->
     {ok, _RetValue, _RetCmd} =
 	yate:send_msg(Handle, chan.masquerade,
 		      [
-		       {message, "call.drop"},
+		       {message, call.drop},
 		       {id, Id},
 		       {reason, Reason},
 		       {module, "erlang"}
