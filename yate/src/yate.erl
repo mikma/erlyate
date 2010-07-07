@@ -114,24 +114,28 @@ uninstall(Handle, Name) ->
 %% @spec ret(Handle, Cmd, Processed) -> ok
 %%           Handle = pid()
 %%           Cmd = #command{}
+%%           Processed = boolean()
 %% @doc answer message
 %% @end
 %%--------------------------------------------------------------------
-ret(Pid, Cmd, Success) when is_pid(Pid), is_record(Cmd, command) ->
-    Pid ! {ret, Cmd#command{success=Success}},
+ret(Pid, Cmd, Processed) when is_pid(Pid), is_record(Cmd, command),
+                            is_boolean(Processed) ->
+    Pid ! {ret, Cmd#command{success=Processed}},
     ok.
 
 %%--------------------------------------------------------------------
 %% @spec ret(Handle, Cmd, Processed, Retval) -> ok
 %%           Handle = pid()
 %%           Cmd = #command{}
+%%           Processed = boolean()
 %%           Retval = string()
 %% @doc answer message
 %% @end
 %%--------------------------------------------------------------------
-ret(Pid, Cmd, Success, Retval) when is_pid(Pid), is_record(Cmd, command) ->
+ret(Pid, Cmd, Processed, Retval) when is_pid(Pid), is_record(Cmd, command),
+                                    is_boolean(Processed) ->
     Header = (Cmd#command.header)#message{retvalue=Retval},
-    Pid ! {ret, Cmd#command{success=Success,header=Header}},
+    Pid ! {ret, Cmd#command{success=Processed,header=Header}},
     ok.
 
 %%--------------------------------------------------------------------
