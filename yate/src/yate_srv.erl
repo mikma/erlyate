@@ -74,7 +74,7 @@ stop(Pid) ->
 init([Host, Port]) ->
     error_logger:info_msg("Start ~p ~p~n", [?MODULE, self()]),
     error_logger:info_msg("Connecting ~p~n", [?MODULE]),
-    {ok, Conn} = yate_conn_srv:start_link(Host, Port, self()),
+    {ok, Conn} = yate_conn:start_link(Host, Port, self()),
     error_logger:info_msg("Connected ~p~n", [?MODULE]),
 %%    link(Conn),
     process_flag(trap_exit, true),

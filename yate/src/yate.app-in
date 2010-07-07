@@ -9,7 +9,6 @@
 	     yate_call_reg,
              yate_command,
 	     yate_conn,
-	     yate_conn_srv,
 	     yate_decode,
 	     yate_encode,
 	     yate,
