@@ -63,7 +63,10 @@ stop() ->
 %%
 init([]) ->
     error_logger:info_msg("start ~p~n", [?MODULE]),
-    {ok, Client} = yate:connect(?HOST, ?PORT),
+    {ok, Configdir} = application:get_env(yate, yateconfdir),
+    Config = yate_config:read(filename:join(Configdir, "extmodule.conf")),
+    {tcp, Host, Port} = yate_config:get_extmodule_listener(Config, "erlyate"),
+    {ok, Client} = yate:connect(Host, Port),
     {ok, Handle} = yate:open(Client),
     ok = yate:install(Handle, call.route, 
 		      fun(_Cmd) ->
