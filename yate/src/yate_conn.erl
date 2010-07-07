@@ -151,18 +151,15 @@ send_msg(Handle, Name, Keys) ->
 %% private functions
 %%
 call(Handle, Request) ->
-    Retvalue = case gen_server:call(Handle, Request) of
-	{ok, Retvalue2} ->
-	    Retvalue2;
-	{ok, Retvalue2, _Cmd} ->
-	    Retvalue2
-    end,
-    case Retvalue of
-	true ->
-	    ok;
-	false ->
-	    error
-    end.
+    Retvalue =
+        case gen_server:call(Handle, Request) of
+            {error, Reason} ->
+                throw(Reason);
+            Retvalue2 ->
+                Retvalue2
+        end,
+    Retvalue.
+
 
 %%
 %% gen_server callbacks
@@ -208,7 +205,7 @@ handle_call({install, Name, Prio}, From, State) ->
 	    NewInstalled = dict:append(Name, Prio, State#sstate.installed),
 	    {noreply, NewState#sstate{installed=NewInstalled}};
 	true ->
-	    {reply, {ok, true}, State}
+	    {reply, ok, State}
     end;
 handle_call({uninstall, Name}, From, State) ->
     Installed = State#sstate.installed,
@@ -219,7 +216,7 @@ handle_call({uninstall, Name}, From, State) ->
 	    NewInstalled = dict:erase(Name, Installed),
 	    {noreply, NewState#sstate{installed = NewInstalled}};
 	false ->
-	    {reply, {ok, true}, State}
+	    {reply, ok, State}
     end;
 handle_call({watch, Name}, From, State) ->
     case dict:is_key(Name, State#sstate.watched) of
@@ -229,7 +226,7 @@ handle_call({watch, Name}, From, State) ->
 	    NewDict = dict:append(Name, From, State#sstate.watched),
 	    {noreply, NewState#sstate{watched=NewDict}};
 	true ->
-	    {reply, {ok, true}, State}
+	    {reply, ok, State}
     end;
 handle_call({unwatch, Name}, From, State) ->
     Dict = State#sstate.watched,
@@ -240,7 +237,7 @@ handle_call({unwatch, Name}, From, State) ->
 	    NewDict = dict:erase(Name, Dict),
 	    {noreply, NewState#sstate{watched = NewDict}};
 	false ->
-	    {reply, {ok, true}, State}
+	    {reply, ok, State}
     end;
 handle_call({msg, Name, Keys}, From, State) ->
     {ok, NewState} = queue_message(Name, Keys, {call, From}, State),
@@ -313,10 +310,14 @@ handle_command(ans, Cmd, State) ->
     Key = {Cmd#command.type, Id},
     case dict:find(Key, State#sstate.pending) of
 	{ok, Tag} ->
-	    Reply = Cmd#command.success,
+	    Reply =
+                case Cmd#command.success of
+                    true -> ok;
+                    false -> {error, failure}
+                end,
 	    case Tag of
 		{call, From} ->
-		    gen_server:reply(From, {ok, Reply, Cmd});
+		    gen_server:reply(From, Reply);
 		{cast, Pid, Tag2} ->
 		    Pid ! {cast, {ans, Reply, Cmd}, Tag2};
 		_ ->
