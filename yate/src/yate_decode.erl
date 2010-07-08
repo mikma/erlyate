@@ -34,7 +34,7 @@ decode_command(uninstall, ans, [PrioStr, NameStr, SuccessStr | KeyStrs]) ->
     Name = decode_name(NameStr),
     Success = decode_success(SuccessStr),
     Keys = yate_command:decode_keys(KeyStrs),
-    Header = #uninstall{priority=Prio},
+    Header = #uninstall_ans{priority=Prio},
     {ok, #command{type=uninstall,id=Name,success=Success,header=Header,keys=Keys}};
 decode_command(watch, ans, [NameStr, SuccessStr | KeyStrs]) ->
     Name = decode_name(NameStr),

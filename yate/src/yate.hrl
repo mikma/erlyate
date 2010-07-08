@@ -9,7 +9,8 @@
 -record(message,{time,name,retvalue}).
 -record(install_req,{priority,filter}).
 -record(install_ans,{priority}).
--record(uninstall,{priority}).
+-record(uninstall_req,{}).
+-record(uninstall_ans,{priority}).
 -record(watch,{}).
 -record(unwatch,{}).
 -record(setlocal,{value}).
