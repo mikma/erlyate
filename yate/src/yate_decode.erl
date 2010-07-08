@@ -27,7 +27,7 @@ decode_command(install, ans, [PrioStr, NameStr, SuccessStr | KeyStrs]) ->
     Name = decode_name(NameStr),
     Success = decode_success(SuccessStr),
     Keys = yate_command:decode_keys(KeyStrs),
-    Header = #install{priority=Prio},
+    Header = #install_ans{priority=Prio},
     {ok, #command{type=install,id=Name,success=Success,header=Header,keys=Keys}};
 decode_command(uninstall, ans, [PrioStr, NameStr, SuccessStr | KeyStrs]) ->
     Prio = decode_prio(PrioStr),

@@ -23,8 +23,8 @@ encode_command(connect, req, Cmd) ->
     encode_data({connect, req, Headers, Cmd#command.keys});
 encode_command(install, req, Cmd) ->
     Header = Cmd#command.header,
-    Filter = encode_filter(Header#install.filter),
-    Headers = [Header#install.priority, Cmd#command.id, Filter],
+    Filter = encode_filter(Header#install_req.filter),
+    Headers = [Header#install_req.priority, Cmd#command.id, Filter],
     encode_data({install, req, Headers, Cmd#command.keys});
 encode_command(uninstall, req, Cmd) ->
     Headers = [Cmd#command.id],

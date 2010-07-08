@@ -199,7 +199,7 @@ code_change(_OldVsn, State, _Extra) ->
 handle_call({install, Name, Prio}, From, State) ->
     case dict:is_key(Name, State#sstate.installed) of
 	false ->
-	    Header = #install{priority=Prio},
+	    Header = #install_req{priority=Prio},
 	    Cmd = #command{id=Name,header=Header,type=install},
 	    {ok, NewState} = queue_command(req, Cmd, {call, From}, State),
 	    NewInstalled = dict:append(Name, Prio, State#sstate.installed),
