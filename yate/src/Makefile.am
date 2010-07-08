@@ -14,7 +14,6 @@ yate_call_reg.erl \
 yate_command.erl \
 yate_config.erl \
 yate_conn.erl \
-yate_conn_srv.erl \
 yate_decode.erl \
 yate_encode.erl \
 yate.erl \
