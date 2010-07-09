@@ -319,7 +319,7 @@ handle_command(ans, Cmd, State) ->
 		{call, From} ->
 		    gen_server:reply(From, Reply);
 		{cast, Pid, Tag2} ->
-		    Pid ! {cast, {ans, Reply, Cmd}, Tag2};
+		    Pid ! {yate_queue_ans, Reply, Cmd, Tag2};
 		_ ->
 		    error_logger:error_msg("handle_command wrong tag ~p~n",
 					   [Tag])

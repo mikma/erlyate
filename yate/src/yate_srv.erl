@@ -139,10 +139,10 @@ handle_info({yate_req, Cmd, From}, State) ->
     handle_command(Cmd#command.type, req, Cmd, From, State);
 handle_info({yate_ans, Cmd, From}, State) ->
     handle_command(Cmd#command.type, ans, Cmd, From, State);
-handle_info({cast, {ans, RetValue, RetCmd}, {queue, Pid, Tag}}, State) ->
+handle_info({yate_queue_ans, RetValue, RetCmd, {queue, Pid, Tag}}, State) ->
     Pid ! {cast, {ans, RetValue, RetCmd}, Tag},
     {noreply, State};
-handle_info({cast, {ans, RetValue, RetCmd}, {send, From}}, State) ->
+handle_info({yate_queue_ans, RetValue, RetCmd, {send, From}}, State) ->
     gen_server:reply(From, {ok, RetValue, RetCmd}),
     {noreply, State};
 handle_info({'EXIT', Conn, normal}, #sstate{conn=Conn}=State) -> 
