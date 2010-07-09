@@ -132,7 +132,7 @@ ret(Handle, Cmd, Success, Retval) ->
 %% @end
 %%--------------------------------------------------------------------
 queue_msg(Handle, Name, Keys, Tag) ->
-    gen_server:cast(Handle, {msg, Name, Keys, self(), Tag}).
+    gen_server:cast(Handle, {queue_msg, Name, Keys, self(), Tag}).
 
 
 %%--------------------------------------------------------------------
@@ -144,7 +144,7 @@ queue_msg(Handle, Name, Keys, Tag) ->
 %% @end
 %%--------------------------------------------------------------------
 send_msg(Handle, Name, Keys) ->
-    gen_server:call(Handle, {msg, Name, Keys}).
+    gen_server:call(Handle, {send_msg, Name, Keys}).
 
 
 %%
@@ -239,7 +239,7 @@ handle_call({unwatch, Name}, From, State) ->
 	false ->
 	    {reply, ok, State}
     end;
-handle_call({msg, Name, Keys}, From, State) ->
+handle_call({send_msg, Name, Keys}, From, State) ->
     {ok, NewState} = queue_message(Name, Keys, {call, From}, State),
     {noreply, NewState};
 handle_call(Request, _From, State) ->
@@ -254,7 +254,7 @@ handle_cast({yate_ret, Cmd}, State) ->
     Sock = State#sstate.sock,
     ok = send_command(Sock, ans, Cmd),
     {noreply, State};
-handle_cast({msg, Name, Keys, Pid, Tag}, State) ->
+handle_cast({queue_msg, Name, Keys, Pid, Tag}, State) ->
     {ok, NewState} = queue_message(Name, Keys, {cast, Pid, Tag}, State),
     {noreply, NewState};
 handle_cast(Request, State) ->
