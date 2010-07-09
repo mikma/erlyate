@@ -109,7 +109,7 @@ uninstall(Handle, Name) ->
 %% @end
 %%--------------------------------------------------------------------
 ret(Handle, Cmd, Success) ->
-    gen_server:cast(Handle, {ret, Cmd#command{success=Success}}).
+    gen_server:cast(Handle, {yate_ret, Cmd#command{success=Success}}).
 
 %%--------------------------------------------------------------------
 %% @spec ret(Handle, Cmd, Processed, Retval) -> ok
@@ -121,7 +121,7 @@ ret(Handle, Cmd, Success) ->
 %%--------------------------------------------------------------------
 ret(Handle, Cmd, Success, Retval) ->
     Header = (Cmd#command.header)#message{retvalue=Retval},
-    gen_server:cast(Handle, {ret, Cmd#command{success=Success,header=Header}}).
+    gen_server:cast(Handle, {yate_ret, Cmd#command{success=Success,header=Header}}).
 
 %%--------------------------------------------------------------------
 %% @spec queue_msg(Handle, Name, Keys, Tag) -> ok
@@ -250,7 +250,7 @@ handle_call(Request, _From, State) ->
 %% @private
 handle_cast(stop, State) ->
     {stop, normal, State};
-handle_cast({ret, Cmd}, State) ->
+handle_cast({yate_ret, Cmd}, State) ->
     Sock = State#sstate.sock,
     ok = send_command(Sock, ans, Cmd),
     {noreply, State};

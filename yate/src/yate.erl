@@ -120,7 +120,7 @@ uninstall(Handle, Name) ->
 %%--------------------------------------------------------------------
 ret(Pid, Cmd, Processed) when is_pid(Pid), is_record(Cmd, command),
                             is_boolean(Processed) ->
-    Pid ! {ret, Cmd#command{success=Processed}},
+    Pid ! {yate_ret, Cmd#command{success=Processed}},
     ok.
 
 %%--------------------------------------------------------------------
@@ -135,7 +135,7 @@ ret(Pid, Cmd, Processed) when is_pid(Pid), is_record(Cmd, command),
 ret(Pid, Cmd, Processed, Retval) when is_pid(Pid), is_record(Cmd, command),
                                     is_boolean(Processed) ->
     Header = (Cmd#command.header)#message{retvalue=Retval},
-    Pid ! {ret, Cmd#command{success=Processed,header=Header}},
+    Pid ! {yate_ret, Cmd#command{success=Processed,header=Header}},
     ok.
 
 %%--------------------------------------------------------------------

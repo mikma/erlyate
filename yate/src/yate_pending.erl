@@ -67,7 +67,7 @@ handle_cast(_Request, _State) ->
 
 
 %% @private
-handle_info({ret, Cmd}, State) ->
+handle_info({yate_ret, Cmd}, State) ->
     Success = Cmd#command.success,
     handle_ret(Success, Cmd, State);
 handle_info(timeout, State) ->
