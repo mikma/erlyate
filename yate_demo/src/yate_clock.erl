@@ -83,7 +83,7 @@ handle_info({yate_call, execute, _From}, State) ->
     {noreply, State};
 handle_info({yate_call, hangup, _From}, State) ->
     {stop, normal, State};
-handle_info({yate_call, disconnected, _From}, State) ->
+handle_info({yate_call, disconnected, _Cmd, _From}, State) ->
     {noreply, State};
 handle_info({yate_notify, Tag}, State=#sstate{id=Tag}) ->
     handle_notify(State#sstate.waves, State);
@@ -174,5 +174,5 @@ wave_ones(Ones) ->
     end.
 
 asterisk_sound_path() ->
-    "/usr/share/asterisk/sounds/digits/".
+    "/usr/share/asterisk/sounds/en/digits/".
 

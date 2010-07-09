@@ -135,8 +135,10 @@ handle_cast(Request, State) ->
 
 
 %% @private
-handle_info({yate, Dir, Cmd, From}, State) ->
-    handle_command(Cmd#command.type, Dir, Cmd, From, State);
+handle_info({yate_req, Cmd, From}, State) ->
+    handle_command(Cmd#command.type, req, Cmd, From, State);
+handle_info({yate_ans, Cmd, From}, State) ->
+    handle_command(Cmd#command.type, ans, Cmd, From, State);
 handle_info({cast, {ans, RetValue, RetCmd}, {queue, Pid, Tag}}, State) ->
     Pid ! {cast, {ans, RetValue, RetCmd}, Tag},
     {noreply, State};
@@ -192,7 +194,7 @@ handle_request(Name, Cmd, _From, State) ->
 handle_answer(Name, Cmd, _From, State) ->
     case dict:find(Name, State#sstate.watched) of
 	{ok, EntryList} ->
-	    send_all(ans, Cmd, EntryList);
+	    send_all(yate_ans, Cmd, EntryList);
 	error ->
 	    error_logger:error_msg("Unhandled answer in ~p: ~p~n", [?MODULE, Name]),
 	    ok
@@ -201,15 +203,15 @@ handle_answer(Name, Cmd, _From, State) ->
 
 
 %% @doc Send Cmd to all entries at once
-send_all(Type, Cmd, [Entry|R]) ->
+send_all(Dir, Cmd, [Entry|R]) ->
     case (Entry#install_entry.func)(Cmd) of
 	true ->
-	    Entry#install_entry.pid ! {yate, Type, Cmd, self()};
+	    Entry#install_entry.pid ! {Dir, Cmd, self()};
 	false ->
 	    ok
     end,
-    send_all(Type, Cmd, R);
-send_all(_Type, _Cmd, []) ->
+    send_all(Dir, Cmd, R);
+send_all(_Dir, _Cmd, []) ->
     ok.
 
 

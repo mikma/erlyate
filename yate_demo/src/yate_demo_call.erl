@@ -109,4 +109,4 @@ record_wave(StateData) ->
 play_wave(StateData) ->
     Call = StateData#sstate.call,
     ok = yate_call:play_wave(Call, StateData#sstate.id,
-			"/usr/share/asterisk/sounds/digits/0.gsm").
+			"/usr/share/asterisk/sounds/en/digits/0.gsm").

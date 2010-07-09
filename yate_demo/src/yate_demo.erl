@@ -85,8 +85,10 @@ handle_cast(stop, State) ->
     {stop, normal, State}.
 
 
-handle_info({yate, Dir, Cmd, From}, State) ->
-    handle_command(Cmd#command.type, Dir, Cmd, From, State);
+handle_info({yate_req, Cmd, From}, State) ->
+    handle_command(Cmd#command.type, req, Cmd, From, State);
+handle_info({yate_ans, Cmd, From}, State) ->
+    handle_command(Cmd#command.type, ans, Cmd, From, State);
 handle_info({cast, {ans, RetValue, RetCmd}, {call, From}}, State) ->
     Id = yate_command:fetch_key(id, RetCmd),
     error_logger:info_msg("Result ~p ~p~n", [RetValue, Id]),

@@ -493,9 +493,12 @@ handle_cast(Request, State) ->
 
 
 %% @private
-handle_info({yate, Dir, Cmd, From}, State) ->
+handle_info({yate_req, Cmd, From}, State) ->
     error_logger:error_msg("~p:received cmd ~p~n", [?MODULE, self()]),
-    handle_command(Cmd#command.type, Dir, Cmd, From, State);
+    handle_command(Cmd#command.type, req, Cmd, From, State);
+handle_info({yate_ans, Cmd, From}, State) ->
+    error_logger:error_msg("~p:received cmd ~p~n", [?MODULE, self()]),
+    handle_command(Cmd#command.type, ans, Cmd, From, State);
 handle_info({'EXIT', Pid, Reason}, State=#state{parent=Pid}) ->
     error_logger:error_msg("~p:~p ~p terminated, do drop ~p~n", [?MODULE, self(), Pid, Reason]),
     {ok, State1} = handle_drop("Error", State),

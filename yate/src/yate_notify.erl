@@ -114,8 +114,8 @@ handle_cast(Request, State) ->
 
 
 %% @private
-handle_info({yate, Dir, Cmd, From}, State) ->
-    handle_command(Cmd#command.type, Dir, Cmd, From, State);
+handle_info({yate_req, Cmd, From}, State) ->
+    handle_command(Cmd#command.type, Cmd, From, State);
 handle_info(timeout, State) ->
     error_logger:error_msg("~p: Timeout~n", [?MODULE]),
     send_notify(State),
@@ -130,11 +130,11 @@ terminate(_Reason, State) ->
     yate:close(State#state.handle),
     terminated.
 
-handle_command(message, Dir, Cmd, From, State) ->
+handle_command(message, Cmd, From, State) ->
     Name = (Cmd#command.header)#message.name,
-    handle_message(Name, Dir, Cmd, From, State).
+    handle_message(Name, Cmd, From, State).
 
-handle_message(chan.notify, req, Cmd, From, State) ->
+handle_message(chan.notify, Cmd, From, State) ->
     send_notify(State),
     yate:ret(From, Cmd, true),
     {stop, normal, State}.

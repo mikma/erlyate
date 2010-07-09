@@ -328,12 +328,12 @@ handle_command(ans, Cmd, State) ->
 	    {ok, State#sstate{pending=Pending}};
 	error ->
 	    Pid = State#sstate.pid,
-	    Pid ! {yate, ans, Cmd, self()},
+	    Pid ! {yate_ans, Cmd, self()},
 	    {ok, State}
     end;
 handle_command(req, Cmd, State) when Cmd#command.type == message ->
     Pid = State#sstate.pid,
-    Pid ! {yate, req, Cmd, self()},
+    Pid ! {yate_req, Cmd, self()},
     {ok, State};
 handle_command(req, Cmd, State) ->
     error_logger:error_msg("Unhandled request in ~p: ~p~n", [?MODULE, Cmd]),

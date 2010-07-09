@@ -97,7 +97,7 @@ handle_ret(false, Cmd, State) ->
 
 send_pending(Cmd, State) ->
     EntryList = State#state.entry_list,
-    case send_once(req, Cmd, EntryList) of
+    case send_once(yate_req, Cmd, EntryList) of
 	{ok, NewEntryList} ->
 	    {ok, State#state{entry_list=NewEntryList}};
 	error ->
@@ -110,7 +110,7 @@ send_pending(Cmd, State) ->
 send_once(Type, Cmd, [Entry|R]) ->
     case (Entry#install_entry.func)(Cmd) of
 	true ->
-	    Entry#install_entry.pid ! {yate, Type, Cmd, self()},
+	    Entry#install_entry.pid ! {Type, Cmd, self()},
 	    {ok, R};
 	false ->
 	    send_once(Type, Cmd, R)
