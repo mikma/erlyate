@@ -8,11 +8,11 @@
 -behaviour(gen_server).
 
 %% api
--export([start_link/4, start_link/5, start/4]).
+-export([start_link/4, start/4]).
 
 %% gen_fsm
 -export([code_change/3, handle_call/3, handle_cast/2, handle_info/2,
-	 init/1, terminate/2, route/2]).
+	 init/1, terminate/2]).
 
 %% Debug
 -export([wave_year/1, wave_number/1, wave_tens/1, wave_ones/1]).
@@ -24,27 +24,20 @@
 -define(TIMEOUT_WAIT_EXEC, 10000). %% 10s
 
 start(Client, Cmd, From, Args) ->
-    Id = yate_command:fetch_key(id, Cmd),
-    start(Client, Id, Cmd, From, Args).
-
-start_link(Client, Cmd, From, Args) ->
-    Id = yate_command:fetch_key(id, Cmd),
-    start_link(Client, Id, Cmd, From, Args).
-
-start(Client, Id, Cmd, From, Args) ->
-    gen_server:start(yate_clock, [Client, Id, Cmd, From, Args], []).
+    gen_server:start(yate_clock, [Client, Cmd, From, Args], []).
 
 %%--------------------------------------------------------------------
-%% @spec start_link(Client, Id, Cmd, From, Args) -> Result
+%% @spec start_link(Client, Cmd, From, Args) -> Result
 %%           Result = {ok, Pid} | {error, Reason}
 %% @doc Start demo server
 %% @end
 %%--------------------------------------------------------------------
-start_link(Client, Id, Cmd, From, Args) ->
-    gen_server:start_link(yate_clock, [Client, Id, Cmd, From, Args], []).
+start_link(Client, Cmd, From, Args) ->
+    gen_server:start_link(yate_clock, [Client, Cmd, From, Args], []).
 
 %% gen_server
-init([Client, Id, ExecCmd, From, _Args]) ->
+init([Client, ExecCmd, From, _Args]) ->
+    Id = yate_command:fetch_key(id, ExecCmd),
     error_logger:info_msg("yate_clock start_link ~p~n", [self()]),
     {{Year, Month, Day}, {_Hour, _Min, _Secs}} = erlang:localtime(),
     Waves = wave_month(Month) ++ wave_day(Day) ++ wave_year(Year),
@@ -62,9 +55,6 @@ init([Client, Id, ExecCmd, From, _Args]) ->
     yate:ret(From, NewCmd, false),
 
     {ok, #sstate{handle=Handle, id=Id, waves=Waves, call=Call}, ?TIMEOUT_WAIT_EXEC}.
-
-route(timeout, State) ->
-    {stop, error, State}.
 
 handle_cast(_Request, _State) ->
     exit(unhandled_cast).
