@@ -592,14 +592,15 @@ handle_drop(Reason, State) ->
 
 setup_watches(State) ->
     Handle = State#state.handle,
-    Id = State#state.peerid,
+    Id = State#state.id,
+    Peerid = State#state.peerid,
     ok = yate:watch(Handle, chan.disconnected,
 		    fun(Cmd) ->
 			    Id == yate_command:fetch_key(id, Cmd)
 		    end),
     ok = yate:watch(Handle, call.ringing,
 		    fun(Cmd) ->
- 			    Id == yate_command:fetch_key(targetid, Cmd)
+ 			    Peerid == yate_command:fetch_key(targetid, Cmd)
 		    end),
     ok = yate:watch(Handle, chan.hangup,
 		    fun(Cmd) ->
@@ -607,14 +608,14 @@ setup_watches(State) ->
 		    end),
     ok = yate:watch(Handle, call.progress,
 		    fun(Cmd) ->
-			    Id == yate_command:fetch_key(targetid, Cmd)
+			    Peerid == yate_command:fetch_key(targetid, Cmd)
 		    end),
     ok = yate:watch(Handle, call.answered,
 		    fun(Cmd) ->
-			    Id == yate_command:fetch_key(targetid, Cmd)
+			    Peerid == yate_command:fetch_key(targetid, Cmd)
 		    end),
     ok = yate:install(Handle, chan.dtmf,
 		      fun(Cmd) ->
-			      Id == yate_command:fetch_key(targetid, Cmd)
+			      Peerid == yate_command:fetch_key(targetid, Cmd)
 		      end),
     ok.
