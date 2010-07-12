@@ -285,13 +285,14 @@ handle_call({execute, Keys}, _From, State) ->
 
 %% @private
 handle_call(answer, _From, State) ->
-    Id = State#state.peerid,
+    Id = State#state.id,
+    Peerid = State#state.peerid,
     Handle = State#state.handle,
     {ok, _RetValue, _RetCmd} =
-	yate:send_msg(Handle, chan.masquerade,
+	yate:send_msg(Handle, call.answered,
 		      [
-		       {message, call.answered},
-		       {id, Id},
+		       {id, Peerid},
+                       {targetid, Id},
 		       {module, "erlang"}
 		      ]),
     {reply, ok, State};
@@ -301,7 +302,8 @@ handle_call({drop, Reason}, _From, State) ->
     {reply, ok, State1};
 
 handle_call({play_wave, Notify, WaveFile, Pid}, _From, State) ->
-    Id = State#state.peerid,
+    Id = State#state.id,
+    Peerid = State#state.peerid,
     Handle = State#state.handle,
     {ok, NotifyPid} = yate_notify:start_link(State#state.client, Notify, Pid),
     {ok, NotifyId} = yate_notify:get_id(NotifyPid),
@@ -440,26 +442,28 @@ handle_call({start_rtp, Remote_address}, _From, State) ->
     {reply, {ok, Localip, Localport}, State#state{localip=Localip}};
 
 handle_call(ringing, _From, State) ->
-    Id = State#state.peerid,
+    Id = State#state.id,
+    Peerid = State#state.peerid,
     Handle = State#state.handle,
     {ok, _RetValue, _RetCmd} =
-	yate:send_msg(Handle, chan.masquerade,
+	yate:send_msg(Handle, call.ringing,
 		      [
-		       {message, call.ringing},
- 		       {id, Id},
+ 		       {id, Peerid},
+                       {targetid, Id},
 		       {module, "erlang"}
 		      ]),
     
     {reply, ok, State};
 
 handle_call(progress, _From, State) ->
-    Id = State#state.peerid,
+    Id = State#state.id,
+    Peerid = State#state.peerid,
     Handle = State#state.handle,
     {ok, _RetValue, _RetCmd} =
-	yate:send_msg(Handle, chan.masquerade,
+	yate:send_msg(Handle, chan.progress,
 		      [
-		       {message, call.progress},
- 		       {id, Id},
+ 		       {id, Peerid},
+                       {targeid, Id},
 		       {module, "erlang"},
 		       %% FIXME enable only if available.
 		       {earlymedia, true},
@@ -565,18 +569,21 @@ handle_message(chan.hangup, ans, _Cmd, _From, State) ->
     Parent = State#state.parent,
     Parent ! {yate_call, hangup, self()},
     error_logger:error_msg("~p:hangup received ~p~n", [?MODULE, self()]),
-    {stop, normal, State}.
+    {stop, normal, State};
+handle_message(Message, Dir, _Cmd, _From, State) ->
+    error_logger:error_msg("~p:Unhandled message ~p ~p ~p~n", [?MODULE, self(), Message, Dir]),
+    {noreply, State}.
 
 
 handle_drop(Reason, State) ->
-    error_logger:info_msg("~p:handle_drop ~p ~p~n", [?MODULE, Reason, State]),
-    Id = State#state.peerid,
+    Id = State#state.id,
+    Peerid = State#state.peerid,
     Handle = State#state.handle,
     {ok, _RetValue, _RetCmd} =
-	yate:send_msg(Handle, chan.masquerade,
+	yate:send_msg(Handle, call.drop,
 		      [
-		       {message, call.drop},
-		       {id, Id},
+		       {id, Peerid},
+                       {targetid, Id},
 		       {reason, Reason},
 		       {module, "erlang"}
 		      ]),
