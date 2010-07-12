@@ -258,8 +258,12 @@ code_change(_OldVsn, State, _Extra) ->
 handle_call({execute, Keys}, _From, State) ->
     Handle = State#state.handle,
     Parent = State#state.parent,
+    Id = State#state.id,
     %% TODO async msg
-    {ok, RetValue, RetCmd} = yate:send_msg(Handle, call.execute, Keys),
+    Keys1 = [{message, call.execute},
+             {id, Id}
+             |Keys],
+    {ok, RetValue, RetCmd} = yate:send_msg(Handle, chan.masquerade, Keys1),
     case RetValue of
 	false ->
 	    %% TODO return false
@@ -268,11 +272,11 @@ handle_call({execute, Keys}, _From, State) ->
 	    %% TODO change to error state?
 	    gen_server:cast(self(), stop),
 	    {reply, {error, {noroute, RetCmd}}, State};
-	true ->
-	    {ok, Auto} = fetch_auto_keys(RetCmd),
-	    Id = yate_command:fetch_key(id, RetCmd),
-	    Peerid = yate_command:fetch_key(peerid, RetCmd),
-	    State1 = State#state{peerid=Id,id=Peerid,status=outgoing},
+	ok ->
+	    Auto = fetch_auto_keys(RetCmd),
+	    Id1 = yate_command:fetch_key(id, RetCmd),
+	    Peerid1 = yate_command:fetch_key(peerid, RetCmd),
+	    State1 = State#state{id=Id1,peerid=Peerid1,status=outgoing},
 	    ok = setup_watches(State1),
 	    Parent ! {yate_call, Auto, RetCmd, self()},
 	    {reply, ok, State1}
