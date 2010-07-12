@@ -63,13 +63,21 @@ handle_call(_Request, _From, _State) ->
     exit(unhandled_call).
 
 
+handle_info(ringing, State) ->
+    ok = yate_call:ringing(State#sstate.call),
+    %% Answer after 0.5s delay
+    timer:send_after(500, answer),
+    {noreply, State};
+
 handle_info(answer, State) ->
     ok = yate_call:answer(State#sstate.call),
-    {noreply, State, 20};
+    {noreply, State, 500};
 
 handle_info({yate_call, execute, _From}, State) ->
-    ok = yate_call:ringing(State#sstate.call),
-    timer:send_after(1000, answer),
+    %% Ring after 0.5s delay
+    timer:send_after(500, ringing),
+    {noreply, State};
+handle_info({yate_call, answered, _Cmd, _From}, State) ->
     {noreply, State};
 handle_info({yate_call, hangup, _From}, State) ->
     {stop, normal, State};
@@ -94,8 +102,8 @@ code_change(_OldVsn, State, _Extra)  ->
 
 
 handle_notify([], State) ->
-    ok = yate_call:drop(State#sstate.call),
-    {noreply, State};
+    %% Hangup after 0.5s delay
+    {noreply, State, 500};
 handle_notify([_Wave_file | _R], State) ->
     {noreply, State, 10}.
 
