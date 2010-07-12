@@ -219,7 +219,7 @@ setup(incoming, [Cmd], State) ->
 				    false
 			    end
 		    end),
-    {ok, State#state{peerid=Id,status=incoming}};
+    {ok, State#state{id=Id,status=incoming}};
 
 setup(outgoing, [], State) ->
     {ok, State}.
@@ -272,7 +272,7 @@ handle_call({execute, Keys}, _From, State) ->
 	    {ok, Auto} = fetch_auto_keys(RetCmd),
 	    Id = yate_command:fetch_key(id, RetCmd),
 	    Peerid = yate_command:fetch_key(peerid, RetCmd),
-	    State1 = State#state{id=Id,peerid=Peerid,status=outgoing},
+	    State1 = State#state{peerid=Id,id=Peerid,status=outgoing},
 	    ok = setup_watches(State1),
 	    Parent ! {yate_call, Auto, RetCmd, self()},
 	    {reply, ok, State1}
@@ -281,7 +281,7 @@ handle_call({execute, Keys}, _From, State) ->
 
 %% @private
 handle_call(answer, _From, State) ->
-    Id = State#state.id,
+    Id = State#state.peerid,
     Handle = State#state.handle,
     {ok, _RetValue, _RetCmd} =
 	yate:send_msg(Handle, chan.masquerade,
@@ -297,7 +297,7 @@ handle_call({drop, Reason}, _From, State) ->
     {reply, ok, State1};
 
 handle_call({play_wave, Notify, WaveFile, Pid}, _From, State) ->
-    Id = State#state.id,
+    Id = State#state.peerid,
     Handle = State#state.handle,
     {ok, NotifyPid} = yate_notify:start_link(State#state.client, Notify, Pid),
     {ok, NotifyId} = yate_notify:get_id(NotifyPid),
@@ -311,7 +311,7 @@ handle_call({play_wave, Notify, WaveFile, Pid}, _From, State) ->
     {reply, ok, State};
 
 handle_call({play_tone, Tone}, _From, State) ->
-    Id = State#state.id,
+    Id = State#state.peerid,
     Handle = State#state.handle,
     {ok, _RetValue, _RetCmd} =
 	yate:send_msg(Handle, chan.masquerade,
@@ -321,7 +321,7 @@ handle_call({play_tone, Tone}, _From, State) ->
     {reply, ok, State};
 
 handle_call({record_wave, Notify, WaveFile, MaxLen, Pid}, _From, State) ->
-    Id = State#state.id,
+    Id = State#state.peerid,
     Handle = State#state.handle,
     {ok, NotifyPid} = yate_notify:start_link(State#state.client, Notify, Pid, 2000),
     {ok, NotifyId} = yate_notify:get_id(NotifyPid),
@@ -357,7 +357,7 @@ handle_call({record_wave, Notify, WaveFile, MaxLen, Pid}, _From, State) ->
     {reply, ok, State};
 
 handle_call({start_rtp, Remote_address, Remote_port}, _From, State) ->
-    Id = State#state.id,
+    Id = State#state.peerid,
     Handle = State#state.handle,
     Format = alaw,
 
@@ -408,7 +408,7 @@ handle_call({start_rtp, Remote_address, Remote_port}, _From, State) ->
     {reply, Reply, State1};
 
 handle_call({start_rtp, Remote_address}, _From, State) ->
-    Id = State#state.id,
+    Id = State#state.peerid,
     Handle = State#state.handle,
     Format = alaw,
 
@@ -436,7 +436,7 @@ handle_call({start_rtp, Remote_address}, _From, State) ->
     {reply, {ok, Localip, Localport}, State#state{localip=Localip}};
 
 handle_call(ringing, _From, State) ->
-    Id = State#state.id,
+    Id = State#state.peerid,
     Handle = State#state.handle,
     {ok, _RetValue, _RetCmd} =
 	yate:send_msg(Handle, chan.masquerade,
@@ -449,7 +449,7 @@ handle_call(ringing, _From, State) ->
     {reply, ok, State};
 
 handle_call(progress, _From, State) ->
-    Id = State#state.id,
+    Id = State#state.peerid,
     Handle = State#state.handle,
     {ok, _RetValue, _RetCmd} =
 	yate:send_msg(Handle, chan.masquerade,
@@ -465,7 +465,7 @@ handle_call(progress, _From, State) ->
     {reply, ok, State};
 
 handle_call({send_dtmf, Dtmf}, _From, State) ->
-    Id = State#state.id,
+    Id = State#state.peerid,
     Rtpid = State#state.rtpid,
     Handle = State#state.handle,
     ok =
@@ -531,7 +531,7 @@ handle_command(message, Dir, Cmd, From, State) ->
 
 handle_message(call.execute, ans, Cmd, _From, State) ->
     Peerid = yate_command:fetch_key(peerid, Cmd),
-    State1 = State#state{id=Peerid},
+    State1 = State#state{peerid=Peerid},
     ok = setup_watches(State1),
     Parent = State#state.parent,
     Parent ! {yate_call, execute, self()},
@@ -566,7 +566,7 @@ handle_message(chan.hangup, ans, _Cmd, _From, State) ->
 
 handle_drop(Reason, State) ->
     error_logger:info_msg("~p:handle_drop ~p ~p~n", [?MODULE, Reason, State]),
-    Id = State#state.id,
+    Id = State#state.peerid,
     Handle = State#state.handle,
     {ok, _RetValue, _RetCmd} =
 	yate:send_msg(Handle, chan.masquerade,
@@ -581,7 +581,7 @@ handle_drop(Reason, State) ->
 
 setup_watches(State) ->
     Handle = State#state.handle,
-    Id = State#state.id,
+    Id = State#state.peerid,
     ok = yate:watch(Handle, chan.disconnected,
 		    fun(Cmd) ->
 			    Id == yate_command:fetch_key(id, Cmd)
