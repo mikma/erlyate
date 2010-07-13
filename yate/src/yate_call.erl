@@ -357,7 +357,6 @@ handle_call({record_wave, Notify, WaveFile, MaxLen, Pid}, _From, State) ->
 %% %% 		       {voice, false},
 %% %% 		       {echo, false},
 %% %% 		       {smart, true},
-%% %% 		       {callto, "sip/sip:600@mulder"}
 %% 		       {callto, "tone/ring"}
 %% 		      ] ++ ExtraParams),
     {reply, ok, State};
