@@ -312,7 +312,7 @@ handle_call({play_wave, Notify, WaveFile, Pid}, _From, State) ->
 		      [{message, chan.attach},
 		       {id, Id},
 		       {notify, NotifyId},
-		       {source, ["wave/play/", WaveFile]}
+		       {override, ["wave/play/", WaveFile]}
 		      ]),
     {reply, ok, State};
 
