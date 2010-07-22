@@ -1,7 +1,7 @@
 include $(top_srcdir)/rules/app.mk
 
 AM_ERL_FLAGS = -pz ../../yate/ebin
-AM_ERLCFLAGS = -I$(srcdir)/../../yate/include
+AM_ERLCFLAGS = -I$(srcdir)/../../yate/src
 
 OTP_APP = yate_demo
 
